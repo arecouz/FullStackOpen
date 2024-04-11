@@ -1,15 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddNewPersonForm from "./components/AddNewPersonForm";
 import SearchPersons from "./components/SearchPersons";
 import DisplayPersons from "./components/DisplayPersons";
+import personsService from "./services/persons";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "01234" },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [newSearch, setNewSearch] = useState("");
+
+  useEffect(() => {
+    personsService.getAll().then((response) => {
+      setPersons(response.data);
+    });
+  }, []);
 
   const filteredPersons = () => {
     return persons.filter((person) =>
@@ -20,15 +25,33 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault();
     const personObject = { name: newName, number: newNumber };
-    {
-      /* Check for duplicate names before saving to persons */
-    }
-    if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already in phonebook`);
-      setNewName("");
-      setNewNumber("");
+    const existingPerson = persons.find((person) => person.name === newName);
+    if (existingPerson) {
+      if (
+        window.confirm(
+          `${newName} is already in the phonebook. Would you like to replace the old number with a new one?`
+        )
+      ) {
+        const updatedPerson = { ...existingPerson, number: newNumber };
+        console.log("updatedPerson", updatedPerson);
+        personsService
+          .update(existingPerson.id, updatedPerson)
+          .then((response) => console.log("response", response.data));
+        setPersons(
+          persons.map((person) =>
+            person.id === existingPerson.id ? updatedPerson : person
+          )
+        );
+        setNewName("");
+        setNewNumber("");
+      } else {
+        setNewName("");
+        setNewNumber("");
+      }
     } else {
-      setPersons(persons.concat(personObject));
+      personsService.create(personObject).then((response) => {
+        setPersons(persons.concat(response.data));
+      });
       setNewName("");
       setNewNumber("");
     }
@@ -46,6 +69,15 @@ const App = () => {
     setNewSearch(event.target.value);
   };
 
+  const handleDelete = (idToDelete) => {
+    const personToDelete = persons.find((person) => person.id === idToDelete);
+    if (window.confirm(`Do you want to delete ${personToDelete.name}?`)) {
+      personsService.deleteRequest(idToDelete).then((response) => {
+        setPersons(persons.filter((person) => person.id !== idToDelete));
+      });
+    }
+  };
+
   return (
     <div>
       <AddNewPersonForm
@@ -60,7 +92,10 @@ const App = () => {
         newSearch={newSearch}
         handleSearchChange={handleSearchChange}
       ></SearchPersons>
-      <DisplayPersons persons={filteredPersons()}></DisplayPersons>
+      <DisplayPersons
+        persons={filteredPersons()}
+        handleDelete={handleDelete}
+      ></DisplayPersons>
     </div>
   );
 };
