@@ -3,12 +3,14 @@ import AddNewPersonForm from "./components/AddNewPersonForm";
 import SearchPersons from "./components/SearchPersons";
 import DisplayPersons from "./components/DisplayPersons";
 import personsService from "./services/persons";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [newSearch, setNewSearch] = useState("");
+  const [notificationMessage, setNotificationMessage] = useState(null);
 
   useEffect(() => {
     personsService.getAll().then((response) => {
@@ -33,10 +35,7 @@ const App = () => {
         )
       ) {
         const updatedPerson = { ...existingPerson, number: newNumber };
-        console.log("updatedPerson", updatedPerson);
-        personsService
-          .update(existingPerson.id, updatedPerson)
-          .then((response) => console.log("response", response.data));
+        personsService.update(existingPerson.id, updatedPerson);
         setPersons(
           persons.map((person) =>
             person.id === existingPerson.id ? updatedPerson : person
@@ -52,8 +51,11 @@ const App = () => {
       personsService.create(personObject).then((response) => {
         setPersons(persons.concat(response.data));
       });
+      // SUCCESS
       setNewName("");
       setNewNumber("");
+      setNotificationMessage(`${personObject.name} has been added.`);
+      setTimeout(() => setNotificationMessage(null), 1000);
     }
   };
 
@@ -72,9 +74,16 @@ const App = () => {
   const handleDelete = (idToDelete) => {
     const personToDelete = persons.find((person) => person.id === idToDelete);
     if (window.confirm(`Do you want to delete ${personToDelete.name}?`)) {
-      personsService.deleteRequest(idToDelete).then((response) => {
-        setPersons(persons.filter((person) => person.id !== idToDelete));
-      });
+      personsService
+        .deleteRequest(idToDelete)
+        .then((response) => {
+          setPersons(persons.filter((person) => person.id !== idToDelete));
+        })
+        .catch((error) =>
+          setNotificationMessage(`${personToDelete.name} not found on server. Deleted local copy`),
+          setTimeout(() => setNotificationMessage(null), 3000),
+          setPersons(persons.filter((person) => person.id !== idToDelete))
+        );
     }
   };
 
@@ -87,6 +96,7 @@ const App = () => {
         newNumber={newNumber}
         handleNumberChange={handleNumberChange}
       ></AddNewPersonForm>
+      <Notification message={notificationMessage} />
       <hr />
       <SearchPersons
         newSearch={newSearch}
