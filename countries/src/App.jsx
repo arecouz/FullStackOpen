@@ -48,7 +48,6 @@ function App() {
       </form>
 
       <Display countries={filteredCountries()} setSearchValue={setSearchValue}/>
-      <Weather />
     </>
   );
 }

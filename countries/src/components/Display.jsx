@@ -1,8 +1,10 @@
+import Weather from "./Weather";
+
 const Display = ({ countries, setSearchValue }) => {
-    const WEATHER_API_KEY = "38b858d9d27970fbb938e1dfd8ffd035"
   if (countries) {
     if (countries.length === 1) {
       const countryName = countries[0].name.common;
+      const countryCapital = countries[0].capital
       const countryPop = countries[0].population;
       const countryLanguages = countries[0].languages;
       const flag = countries[0].flags.png;
@@ -10,14 +12,16 @@ const Display = ({ countries, setSearchValue }) => {
       return (
         <div>
           <h1>{countryName}</h1>
-          <img src={flag} alt="flag"></img>
+          <img src={flag} alt="flag" width={150}></img>
           <div>population: {countryPop.toLocaleString()}</div>
+          <div>capital: {countryCapital}</div>
           <div>
             Languages:
             {Object.entries(countryLanguages).map(([key, value]) => (
-              <li>{value}</li>
+              <li key={key}>{value}</li>
             ))}
           </div>
+          <Weather city={countryCapital}/>
         </div>
       );
     }
@@ -25,7 +29,7 @@ const Display = ({ countries, setSearchValue }) => {
       return (
         <div>
           {countries.map((country) => (
-            <div>
+            <div key={country.name.common}>
               <button onClick={() => setSearchValue(country.name.common)}>
                 {country.name.common}
               </button>
