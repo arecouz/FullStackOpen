@@ -14,15 +14,19 @@ const App = () => {
 
   useEffect(() => {
     personsService.getAll().then((response) => {
-      console.log("TEST:  ", response)
+      console.log("TEST:  ", response);
       setPersons(response);
     });
   }, []);
 
   const filteredPersons = () => {
-    return persons.filter((person) =>
-      person.name.toLowerCase().includes(newSearch)
-    );
+    return persons.filter((person) => {
+      const nameIncludesSearch = person.name.toLowerCase().includes(newSearch);
+      console.log(
+        `Filtering person: ${person.name}, Search term: ${newSearch}, Result: ${nameIncludesSearch}`
+      );
+      return nameIncludesSearch;
+    });
   };
 
   const addPerson = (event) => {
@@ -49,14 +53,22 @@ const App = () => {
         setNewNumber("");
       }
     } else {
-      personsService.create(personObject).then((response) => {
-        setPersons(persons.concat(response.data));
-      });
-      // SUCCESS
-      setNewName("");
-      setNewNumber("");
-      setNotificationMessage(`${personObject.name} has been added.`);
-      setTimeout(() => setNotificationMessage(null), 1000);
+      personsService
+        .create(personObject)
+        .then((response) => {
+          console.log("response!!!!!", response)
+          // SUCCESS
+          console.log("success");
+          setPersons(persons.concat(response));
+          setNewName("");
+          setNewNumber("");
+          setNotificationMessage(`${personObject.name} has been added.`);
+          setTimeout(() => setNotificationMessage(null), 1000);
+        })
+        .catch((error) =>
+          console.log("validation error", setNotificationMessage(error)),
+          setTimeout(() => setNotificationMessage(null), 9000)
+        );
     }
   };
 
@@ -80,8 +92,11 @@ const App = () => {
         .then((response) => {
           setPersons(persons.filter((person) => person.id !== idToDelete));
         })
-        .catch((error) =>
-          setNotificationMessage(`${personToDelete.name} not found on server. Deleted local copy`),
+        .catch(
+          (error) =>
+            setNotificationMessage(
+              `${personToDelete.name} not found on server. Deleted local copy`
+            ),
           setTimeout(() => setNotificationMessage(null), 3000),
           setPersons(persons.filter((person) => person.id !== idToDelete))
         );
@@ -104,7 +119,7 @@ const App = () => {
         handleSearchChange={handleSearchChange}
       ></SearchPersons>
       <DisplayPersons
-        persons={filteredPersons()}
+        persons={persons}
         handleDelete={handleDelete}
       ></DisplayPersons>
     </div>

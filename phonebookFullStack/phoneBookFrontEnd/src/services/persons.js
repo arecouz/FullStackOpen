@@ -1,26 +1,30 @@
-import axios from 'axios'
-const baseUrl = '/api/persons'
+import axios from "axios";
+const baseUrl = "/api/persons";
 
 const getAll = () => {
-  return axios.get(baseUrl)
-    .then(response => {
-      console.log(response); 
-      return response.data;
-    });
-}
+  return axios.get(baseUrl).then((response) => {
+    console.log(response);
+    return response.data;
+  });
+};
 
-const create = newObject => {
-  return axios.post(baseUrl, newObject)
-}
+const create = (newObject) => {
+  return axios
+    .post(baseUrl, newObject)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error.response.data.error;
+    });
+};
 
 const update = (id, newObject) => {
-  console.log(`${baseUrl}/${id}`)
-  console.log(newObject)
-  return axios.put(`${baseUrl}/${id}`, newObject)
-}
+  console.log(`${baseUrl}/${id}`);
+  console.log(newObject);
+  return axios.put(`${baseUrl}/${id}`, newObject);
+};
 
 const deleteRequest = (id) => {
-  return axios.delete(`${baseUrl}/${id}`)
-}
+  return axios.delete(`${baseUrl}/${id}`);
+};
 
-export default { getAll, create, update, deleteRequest }
+export default { getAll, create, update, deleteRequest };

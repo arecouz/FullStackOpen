@@ -1,4 +1,5 @@
 const DisplayPersons = ({ persons, handleDelete }) => {
+  console.log(persons)
   return (
     <div>
       {persons.map((person) => (
