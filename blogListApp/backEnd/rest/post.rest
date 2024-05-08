@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Daves Dairy Blog",
-  "author": "Dave Doe",
-  "url": "https://dairy.com",
-  "likes": 0
+  "title" : "testing no author",
+  "author": "still working?",
+  "url": "https://dairy.com", 
+  "likes" : 10
 }

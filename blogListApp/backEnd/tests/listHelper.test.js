@@ -2,6 +2,9 @@ const { test, describe } = require('node:test');
 const assert = require('node:assert');
 const listHelper = require('../utils/list_helper');
 
+console.log("environment: ", process.env.NODE_ENV)
+console.log("uri: ", process.env.MONGODB_URI)
+
 oneBlog = [
   {
     _id: '5a422aa71b54a676234d17f8',

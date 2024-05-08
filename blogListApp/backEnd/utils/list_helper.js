@@ -137,7 +137,6 @@ const mostLikes = (blogs) => {
   return { author: topAuthor, likes: authorLikes[topAuthor] };
 };
 
-console.log('most likes: ', mostLikes(threeBlogsWithDuplicateAuthor));
 module.exports = {
   dummy,
   totalLikes,
