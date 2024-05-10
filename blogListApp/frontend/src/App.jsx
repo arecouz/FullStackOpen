@@ -15,10 +15,11 @@ const App = () => {
   return (
     <>
       <h1>Blogs List</h1>
+
       <ul>
         {blogs.map((blog) => (
           <li key={blog._id}>
-            {blog.title}: {blog.url}
+            <a href={blog.url}>{blog.title}</a>
           </li>
         ))}
       </ul>
