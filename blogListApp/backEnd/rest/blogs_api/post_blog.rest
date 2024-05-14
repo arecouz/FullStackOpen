@@ -1,11 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJpY2hhcmQiLCJpZCI6IjY2NDBkMWFhNjljZmY5ZDY5MjAxMjZmNyIsImlhdCI6MTcxNTUyNDE0MX0.Ikoi4vJEOOoY_yuJ_b1RYKkV1w_GbrxPZRkWef_S444
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJpY2hhcmQiLCJpZCI6IjY2NDBkMWFhNjljZmY5ZDY5MjAxMjZmNyIsImlhdCI6MTcxNTYxMjkzNn0.oYRDIOO24vE9SForBNnSBQ-VAZEUwMrQa8pVNkps5Cw
 
 {
-  "title": "Richards Blog",
-  "author": "Red Resterson",
+  "title": "3",
+  "author": "A Author",
   "url": "https://richard.com",
-  "likes": 5,
-  "userId": "6640d1aa69cff9d6920126f7"
+  "likes": 5
 }

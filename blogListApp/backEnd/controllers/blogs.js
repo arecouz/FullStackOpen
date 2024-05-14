@@ -1,11 +1,11 @@
-const middleware = require('../utils/middleware')
+const middleware = require('../utils/middleware');
 const blogsRouter = require('express').Router();
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({}).populate('user', {"name": 1});
+  const blogs = await Blog.find({}).populate('user', { name: 1 });
   response.status(200).json(blogs);
 });
 
@@ -14,30 +14,31 @@ blogsRouter.get('/:id', async (request, response) => {
   response.status(200).json(blog);
 });
 
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
-  }
-  return null
-}
-
 blogsRouter.post('/', async (request, response) => {
-  const { title, author, url, likes, userId } = request.body;
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  const { title, author, url, likes } = request.body;
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
   if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' })
+    return response.status(401).json({ error: 'token invalid' });
   }
-  const user = await User.findById(decodedToken.id)
+  const user = await User.findById(decodedToken.id);
 
   const newBlog = new Blog({ title, author, url, likes, user });
   const savedBlog = await newBlog.save();
-  user.blogs = user.blogs.concat(savedBlog._id)
-  await user.save()
+  user.blogs = user.blogs.concat(savedBlog._id);
+  await user.save();
   response.status(201).json(savedBlog);
 });
 
 blogsRouter.delete('/:id', async (request, response) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' });
+  }
+
+  const blog = await Blog.findById(request.params.id);
+  if (blog.user.toString() !== request.user) {
+    return response.status(403).json({ error: 'permission denied' });
+  }
   await Blog.findByIdAndDelete(request.params.id);
   response.status(204).end();
 });
