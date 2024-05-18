@@ -11,6 +11,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  margin-left: 15px;
 }
 
 a {
@@ -23,7 +25,7 @@ a:hover {
 }
 
 body {
-  font-family: 'Courier New', monospace; 
+  font-family: 'Courier New', monospace;
   margin: 0;
   display: flex;
   place-items: center;
@@ -32,12 +34,18 @@ body {
 }
 
 h1 {
-  font-family: 'Courier New', monospace; 
+  font-family: 'Courier New', monospace;
   color: #fcba03;
+  font-size: 2.1em;
+  line-height: 1.1;
+  text-align: left;
+}
+h2 {
+  font-family: 'Courier New', monospace;
+  color: #b08202;
   font-size: 1.5em;
   line-height: 1.1;
   text-align: left;
-  padding-left: 28px;
 }
 
 a {
@@ -51,8 +59,8 @@ li {
 
 ul {
   list-style: none; /* Remove bullet points from lists */
+  padding-left: 0px;
 }
-
 
 button {
   border-radius: 8px;
@@ -61,7 +69,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #464646;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -84,4 +92,59 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 300px; /* Adjust the width as needed */
+}
+
+.form-field {
+  margin-bottom: 1rem;
+}
+
+.form-field label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.form-field input {
+  width: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.notification {
+  margin-top: 13px;
+  overflow: auto;
+}
+
+.notification.hidden {
+  color: #242424;
+  transition: opacity 0.3s ease;
+}
+
+.notification.success {
+  color: #07dc00;
+  transition: opacity 0.3s ease;
+}
+
+.notification.error {
+  color: #dc0000;
+  transition: opacity 0.3s ease;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+
+}
+
+
+
+.user-info h2 {
+  margin-right: 100px; 
 }
