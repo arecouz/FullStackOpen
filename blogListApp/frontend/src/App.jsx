@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import LoginButton from './components/LoginButton';
 import loginService from './services/login';
 import LogoutButton from './components/LogoutButton';
+import BlogForm from './components/BlogForm';
+import BlogsList from './components/BlogsList';
+import Toggleable from './components/Toggleable';
 
 const App = () => {
   const baseUrl = '/api/blogs';
@@ -11,11 +14,9 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
-
   const [notification, setNotification] = useState({ type: '', message: '' });
+
+  const noteFormRef = useRef();
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedAppUser');
@@ -60,27 +61,49 @@ const App = () => {
     }, 2500);
   };
 
-  const handleCreateNewBlog = async (event) => {
-    event.preventDefault();
-    const newBlog = {
-      title: title,
-      author: author,
-      url: url,
-    };
+  const addBlog = async (blogObject) => {
+    noteFormRef.current.switchToggle();
     try {
-      const response = await axios.post(baseUrl, newBlog, {
+      const response = await axios.post(baseUrl, blogObject, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setBlogs([...blogs, response.data]);
-      setTitle('');
-      setAuthor('');
-      setUrl('');
-      doNotification('success', `'${title}' added!`);
+      doNotification('success', `'${blogObject.title}' added!`);
     } catch (error) {
       doNotification('error', 'Post failed, try again');
       console.log(error);
     }
   };
+
+  const deleteBlog = async (blogID) => {
+    const blogToDelete = blogs.find((blog) => blog.id === blogID);
+    console.log("delete? : ", blogToDelete)
+    if (window.confirm(`are you sure you want to delete '${blogToDelete.title}'?`))
+    try {
+      const response = await axios.delete(`${baseUrl}/${blogID}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      const updatedBlogs = blogs.filter(blog => blog.id !== blogID);
+      setBlogs(updatedBlogs)
+      doNotification('success', `${blogToDelete.title} successfully deleted`);
+    } catch (error) {
+      doNotification('error', 'delete failed, try again');
+      console.log(error);
+    }
+  };
+
+  const incrementLikes = async (blogID) => {
+    const blogToUpdate = blogs.find((blog) => blog.id === blogID);
+    console.log('increasing likes: ', blogToUpdate);
+    const response = await axios.put(`${baseUrl}/${blogID}`, {
+      likes: blogToUpdate.likes + 1,
+    });
+    const updatedBlogs = blogs.map((blog) =>
+      blog.id === blogID ? { ...blog, likes: blog.likes + 1 } : blog
+    );
+    setBlogs(updatedBlogs);
+  };
+
 
   const loginForm = () => (
     <form onSubmit={handleLogin} className="login-form">
@@ -108,51 +131,6 @@ const App = () => {
     </form>
   );
 
-  const blogsList = () => (
-    <ul>
-      {blogs.map((blog) => (
-        <li key={blog.id}>
-          <a href={blog.url} target="_blank" rel="noopener noreferrer">
-            {blog.title}
-          </a>
-        </li>
-      ))}
-    </ul>
-  );
-
-  const blogForm = () => (
-    <form onSubmit={handleCreateNewBlog}>
-      <div className="form-field">
-        <label>New Blog</label>
-        <input
-          type="text"
-          value={title}
-          name="title"
-          onChange={(event) => setTitle(event.target.value)}
-        />
-      </div>
-      <div className="form-field">
-        <label>Author</label>
-        <input
-          type="text"
-          value={author}
-          name="author"
-          onChange={({ target }) => setAuthor(target.value)}
-        />
-      </div>
-      <div className="form-field">
-        <label>url</label>
-        <input
-          type="text"
-          value={url}
-          name="author"
-          onChange={({ target }) => setUrl(target.value)}
-        />
-      </div>
-      <button>post</button>
-    </form>
-  );
-
   if (user === null) {
     return (
       <div>
@@ -176,9 +154,16 @@ const App = () => {
       <p className={`notification ${notification.type}`}>
         {notification.message}
       </p>
-      {blogForm()}
+      <Toggleable buttonLabel={'Add  blog'} ref={noteFormRef}>
+        <BlogForm handleAddNewBlog={addBlog}></BlogForm>
+      </Toggleable>
       <br></br>
-      {blogsList()}
+      <BlogsList
+        blogs={blogs}
+        incrementLikes={incrementLikes}
+        handleBlogDelete={deleteBlog}
+        user={user}
+      ></BlogsList>
     </>
   );
 };

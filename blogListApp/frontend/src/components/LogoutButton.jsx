@@ -2,6 +2,7 @@ import React from 'react';
 
 const LogoutButton = ({ setUser, doNotification}) => {
   const LogoutButtonStyle = {
+    "width": "78px",
     "borderRadius": "8px",
     "border": "1px solid transparent",
     "fontSize": "1em",

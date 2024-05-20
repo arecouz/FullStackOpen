@@ -7,6 +7,13 @@ const userSchema = new mongoose.Schema({
   blogs: [{type: mongoose.Schema.Types.ObjectId, ref: 'Blog'}]
 });
 
+userSchema.pre('save', function (next) {
+  if (!this.name) {
+    this.name = this.username;
+  }
+  next();
+});
+
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
