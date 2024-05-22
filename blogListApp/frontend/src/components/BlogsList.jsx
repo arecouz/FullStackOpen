@@ -31,9 +31,8 @@ const BlogsList = ({ blogs, incrementLikes, handleBlogDelete, user }) => {
   };
 
   const sortedBlogs = blogs.slice().sort((a, b) => b.likes - a.likes);
-  console.log('sorted blogs: ', sortedBlogs);
   return (
-    <ul>
+    <ul className="blogsList">
       {sortedBlogs.map((blog) => (
         <li key={blog.id} style={blogStyle}>
           <h3 style={tittleStyle}>
@@ -56,7 +55,7 @@ const BlogsList = ({ blogs, incrementLikes, handleBlogDelete, user }) => {
               <p style={{ fontSize: '18px' }}>
                 created by user: {blog.user.username}
               </p>
-              {console.log('!!!!', user, blog)}
+
               {user.username === blog.user.username ? (
                 <button
                   style={{ color: 'white', background: 'red' }}
