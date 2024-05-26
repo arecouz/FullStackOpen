@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LogoutButton = ({ setUser, doNotification}) => {
+const LogoutButton = ({ setUser, doNotification, setUsername, setPassword}) => {
   const LogoutButtonStyle = {
     "width": "78px",
     "borderRadius": "8px",
@@ -33,6 +33,8 @@ const LogoutButton = ({ setUser, doNotification}) => {
         console.log('logout');
         window.localStorage.clear()
         setUser(null)
+        setUsername('')
+        setPassword('')
         doNotification("hidden", "hidden")
       }}
     >

@@ -77,19 +77,21 @@ const App = () => {
 
   const deleteBlog = async (blogID) => {
     const blogToDelete = blogs.find((blog) => blog.id === blogID);
-    console.log("delete? : ", blogToDelete)
-    if (window.confirm(`are you sure you want to delete '${blogToDelete.title}'?`))
-    try {
-      const response = await axios.delete(`${baseUrl}/${blogID}`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
-      const updatedBlogs = blogs.filter(blog => blog.id !== blogID);
-      setBlogs(updatedBlogs)
-      doNotification('success', `${blogToDelete.title} successfully deleted`);
-    } catch (error) {
-      doNotification('error', 'delete failed, try again');
-      console.log(error);
-    }
+    console.log('delete? : ', blogToDelete);
+    if (
+      window.confirm(`are you sure you want to delete '${blogToDelete.title}'?`)
+    )
+      try {
+        const response = await axios.delete(`${baseUrl}/${blogID}`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
+        const updatedBlogs = blogs.filter((blog) => blog.id !== blogID);
+        setBlogs(updatedBlogs);
+        doNotification('success', `${blogToDelete.title} successfully deleted`);
+      } catch (error) {
+        doNotification('error', 'delete failed, try again');
+        console.log(error);
+      }
   };
 
   const incrementLikes = async (blogID) => {
@@ -103,7 +105,6 @@ const App = () => {
     );
     setBlogs(updatedBlogs);
   };
-
 
   const loginForm = () => (
     <form onSubmit={handleLogin} className="login-form">
@@ -149,7 +150,12 @@ const App = () => {
       <h1> Blogs List</h1>
       <div className="user-info">
         <h2>{user.username}</h2>
-        <LogoutButton setUser={setUser} doNotification={doNotification} />
+        <LogoutButton
+          setUser={setUser}
+          doNotification={doNotification}
+          setUsername={setUsername}
+          setPassword={setPassword}
+        />
       </div>
       <p className={`notification ${notification.type}`}>
         {notification.message}

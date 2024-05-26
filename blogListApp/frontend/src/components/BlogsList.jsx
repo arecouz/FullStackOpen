@@ -35,7 +35,7 @@ const BlogsList = ({ blogs, incrementLikes, handleBlogDelete, user }) => {
     <ul className="blogsList">
       {sortedBlogs.map((blog) => (
         <li key={blog.id} style={blogStyle}>
-          <h3 style={tittleStyle}>
+          <h3 style={tittleStyle} data-testid='blogTitle'>
             {blog.title}
             <Toggleable buttonLabel={'view'}>
               <a href={blog.url} target="_blank" rel="noopener noreferrer">
