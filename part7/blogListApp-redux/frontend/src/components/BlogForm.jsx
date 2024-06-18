@@ -1,30 +1,32 @@
 import { useState } from 'react';
-import blogServices from '../services/blogs'
-import { useDispatch } from 'react-redux';
-import { createBlog } from '../reducers/blogsReducer';
 
-const BlogForm = () => {
+const BlogForm = ({ handleAddNewBlog }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
 
-  const dispatch = useDispatch()
+  const addBlog = (event) => {
+    event.preventDefault();
+    handleAddNewBlog({
+      title: title,
+      author: author,
+      url: url,
+    });
 
-  const addBlog = () => {
-    event.preventDefault()
-    blogServices.create({title, author, url})
-    dispatch(createBlog({title, author, url}))
-  }
+    setTitle('');
+    setAuthor('');
+    setUrl('');
+  };
 
   return (
-    <form onSubmit={() => addBlog()}>
+    <form onSubmit={addBlog}>
       <div className="form-field">
         <label>New Blog</label>
         <input
           type="text"
           value={title}
           name="title"
-          placeholder="title"
+          placeholder='title'
           onChange={(event) => setTitle(event.target.value)}
         />
       </div>
@@ -34,7 +36,7 @@ const BlogForm = () => {
           type="text"
           value={author}
           name="author"
-          placeholder="author"
+          placeholder='author'
           onChange={({ target }) => setAuthor(target.value)}
         />
       </div>
@@ -44,7 +46,7 @@ const BlogForm = () => {
           type="text"
           value={url}
           name="url"
-          placeholder="url"
+          placeholder='url'
           onChange={({ target }) => setUrl(target.value)}
         />
       </div>

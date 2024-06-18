@@ -1,7 +1,8 @@
 import React from 'react';
+import { removeUser } from '../reducers/userReducer';
 import { useDispatch } from 'react-redux';
 
-const LogoutButton = ({ setUser, doNotification, setUsername, setPassword}) => {
+const LogoutButton = ({ doNotification, setUsername, setPassword}) => {
   const LogoutButtonStyle = {
     "width": "78px",
     "borderRadius": "8px",

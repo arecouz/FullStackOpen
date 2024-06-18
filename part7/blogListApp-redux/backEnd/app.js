@@ -4,6 +4,7 @@ require('express-async-errors');
 const app = express();
 const cors = require('cors');
 
+const resetRouter = require('./controllers/reset')
 const blogsRouter = require('./controllers/blogs');
 const usersRouter = require('./controllers/users');
 const loginRouter = require('./controllers/login');
@@ -30,6 +31,7 @@ app.use(express.json());
 app.use(middleware.requestLogger);
 app.use(middleware.authenticationToken);
 
+app.use('/reset', resetRouter)
 app.use('/api/blogs', middleware.userExtractor, blogsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);

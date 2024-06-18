@@ -15,6 +15,7 @@ const BlogsList = ({ blogs, incrementLikes, handleBlogDelete, user }) => {
     fontWeight: '500',
     fontFamily: 'inherit',
     backgroundColor: 'green',
+    cursor: 'pointer',
     transition: 'border-color 0.25s',
     marginLeft: '15px',
   };
@@ -29,14 +30,14 @@ const BlogsList = ({ blogs, incrementLikes, handleBlogDelete, user }) => {
     fontWeight: 'bold',
   };
 
-  const sortedBlogs = blogs.slice().sort((a, b) => b.likes - a.likes);
-
+  const sortedBlogs = (blogs.slice().sort((a, b) => b.likes - a.likes));
   return (
     <ul className="blogsList">
+      <p>sorted by likes</p>
       {sortedBlogs.map((blog) => (
         <li key={blog.id} style={blogStyle}>
           <h3 style={tittleStyle} data-testid='blogTitle'>
-            {blog.id}
+            {blog.title}
             <Toggleable buttonLabel={'view'}>
               <a href={blog.url} target="_blank" rel="noopener noreferrer">
                 {blog.url}
