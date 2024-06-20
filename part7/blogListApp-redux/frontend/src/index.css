@@ -26,7 +26,7 @@ a:hover {
 
 body {
   font-family: 'Courier New', monospace;
-  margin: 0;
+  margin: 0.5;
   display: flex;
   place-items: center;
   min-width: 20px;
@@ -141,10 +141,9 @@ button:focus-visible {
 .user-info {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  width: 100%;
+  width: 65%;
 }
 
 .user-info h2 {
-  margin-right: 100px;
+  margin-right: 10px;
 }

@@ -1,51 +1,51 @@
-import { useEffect, useState, useRef } from 'react';
-import LogoutButton from './components/LogoutButton';
-import BlogForm from './components/BlogForm';
-import BlogsList from './components/BlogsList';
-import Toggleable from './components/Toggleable';
-import LoginForm from './components/LoginForm';
-import BlogPage from './components/BlogPage';
-import UserPage from './components/UserPage';
-import User from './components/User'
-import usersServices from './services/users'
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState, useRef } from "react";
+import LogoutButton from "./components/LogoutButton";
+import BlogForm from "./components/BlogForm";
+import BlogsList from "./components/BlogsList";
+import Toggleable from "./components/Toggleable";
+import LoginForm from "./components/LoginForm";
+import BlogPage from "./components/BlogPage";
+import UserPage from "./components/UserPage";
+import User from "./components/User";
+import usersServices from "./services/users";
+import { useDispatch, useSelector } from "react-redux";
 import {
   createNotification,
   hideNotification,
-} from './reducers/notificationReducer';
+} from "./reducers/notificationReducer";
 import {
   initializeBlogs,
   createBlog,
   deleteBlog,
   editBlog,
   setBlogs,
-} from './reducers/blogsReducer';
-import { setUser, removeUser } from './reducers/userReducer';
-import { Route, Routes, useMatch } from 'react-router-dom';
+} from "./reducers/blogsReducer";
+import { setUser, removeUser } from "./reducers/userReducer";
+import { Route, Routes, useMatch, useNavigate } from "react-router-dom";
 
 const App = () => {
-  const [, setUsername] = useState('');
-  const [, setPassword] = useState('');
-  const [users, setUsers] = useState([])
+  const [, setUsername] = useState("");
+  const [, setPassword] = useState("");
+  const [users, setUsers] = useState([]);
 
   const notification = useSelector((state) => state.notification);
   const blogs = useSelector((state) => state.blogs);
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const nav = useNavigate();
 
   const noteFormRef = useRef();
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedAppUser');
+    const loggedUserJSON = window.localStorage.getItem("loggedAppUser");
     if (loggedUserJSON) {
       const currentUser = JSON.parse(loggedUserJSON);
       dispatch(setUser(currentUser));
     }
     dispatch(initializeBlogs());
     usersServices.getAll().then((response) => setUsers(response));
-    console.log("users: ", users)
+    console.log("users: ", users);
   }, [dispatch]);
-
 
   const doNotification = (type, message) => {
     dispatch(createNotification({ type, message }));
@@ -55,16 +55,15 @@ const App = () => {
   };
 
   const addBlog = async (blogObject) => {
-    noteFormRef.current.switchToggle();
     try {
       dispatch(
         createBlog(blogObject, {
           headers: { Authorization: `Bearer ${user.token}` },
         })
       );
-      doNotification('success', `'${blogObject.title}' added!`);
+      doNotification("success", `'${blogObject.title}' added!`);
     } catch (error) {
-      doNotification('error', 'Post failed, try again');
+      doNotification("error", "Post failed, try again");
       console.log(error);
     }
   };
@@ -78,11 +77,11 @@ const App = () => {
         dispatch(
           deleteBlog(blogID, {
             headers: { Authorization: `Bearer ${user.token}` },
-          })
+          }),
         );
-        doNotification('success', `${blogToDelete.title} successfully deleted`);
+        doNotification("success", `${blogToDelete.title} successfully deleted`);
       } catch (error) {
-        doNotification('error', 'delete failed, try again');
+        doNotification("error", "delete failed, try again");
         console.log(error);
       }
   };
@@ -95,6 +94,19 @@ const App = () => {
       console.error;
     }
   };
+
+  const Home = () => (
+    <>
+      <Toggleable buttonLabel={"Add  blog"} ref={noteFormRef}>
+        <BlogForm handleAddNewBlog={addBlog}></BlogForm>
+      </Toggleable>
+      <BlogsList
+        blogs={blogs}
+        handleBlogDelete={handleDeleteBlog}
+        user={user}
+      ></BlogsList>
+    </>
+  );
 
   if (user === null) {
     return (
@@ -122,21 +134,14 @@ const App = () => {
       <p className={`notification ${notification.type}`}>
         {notification.message}
       </p>
-      <Toggleable buttonLabel={'Add  blog'} ref={noteFormRef}>
-        <BlogForm handleAddNewBlog={addBlog}></BlogForm>
-      </Toggleable>
-      <br></br>
-      <BlogsList
-        blogs={blogs}
-        incrementLikes={handleIncrementLikes}
-        handleBlogDelete={handleDeleteBlog}
-        user={user}
-      ></BlogsList>
       <Routes>
-        <Route path="/" element={<p>home</p>} />
-        <Route path="/users/:id" element={<User users={users}/>} />
-        <Route path="/users" element={<UserPage users={users}/>} />
-        <Route path="/blogs/:id" element={<BlogPage />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/users/:id" element={<User users={users} />} />
+        <Route path="/users" element={<UserPage users={users} />} />
+        <Route
+          path="/blogs/:id"
+          element={<BlogPage incrementLikes={handleIncrementLikes} />}
+        />
       </Routes>
     </>
   );
