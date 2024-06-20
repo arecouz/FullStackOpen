@@ -4,6 +4,10 @@ import BlogForm from './components/BlogForm';
 import BlogsList from './components/BlogsList';
 import Toggleable from './components/Toggleable';
 import LoginForm from './components/LoginForm';
+import BlogPage from './components/BlogPage';
+import UserPage from './components/UserPage';
+import User from './components/User'
+import usersServices from './services/users'
 import { useDispatch, useSelector } from 'react-redux';
 import {
   createNotification,
@@ -14,13 +18,15 @@ import {
   createBlog,
   deleteBlog,
   editBlog,
+  setBlogs,
 } from './reducers/blogsReducer';
 import { setUser, removeUser } from './reducers/userReducer';
-
+import { Route, Routes, useMatch } from 'react-router-dom';
 
 const App = () => {
   const [, setUsername] = useState('');
   const [, setPassword] = useState('');
+  const [users, setUsers] = useState([])
 
   const notification = useSelector((state) => state.notification);
   const blogs = useSelector((state) => state.blogs);
@@ -33,10 +39,13 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedAppUser');
     if (loggedUserJSON) {
       const currentUser = JSON.parse(loggedUserJSON);
-      dispatch(setUser(currentUser))
+      dispatch(setUser(currentUser));
     }
     dispatch(initializeBlogs());
+    usersServices.getAll().then((response) => setUsers(response));
+    console.log("users: ", users)
   }, [dispatch]);
+
 
   const doNotification = (type, message) => {
     dispatch(createNotification({ type, message }));
@@ -94,9 +103,7 @@ const App = () => {
         <p className={`notification ${notification.type}`}>
           {notification.message}
         </p>
-        <LoginForm
-          doNotification={doNotification}
-        ></LoginForm>
+        <LoginForm doNotification={doNotification}></LoginForm>
       </div>
     );
   }
@@ -125,6 +132,12 @@ const App = () => {
         handleBlogDelete={handleDeleteBlog}
         user={user}
       ></BlogsList>
+      <Routes>
+        <Route path="/" element={<p>home</p>} />
+        <Route path="/users/:id" element={<User users={users}/>} />
+        <Route path="/users" element={<UserPage users={users}/>} />
+        <Route path="/blogs/:id" element={<BlogPage />} />
+      </Routes>
     </>
   );
 };

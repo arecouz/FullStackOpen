@@ -30,13 +30,20 @@ const BlogsList = ({ blogs, incrementLikes, handleBlogDelete, user }) => {
     fontWeight: 'bold',
   };
 
-  const sortedBlogs = (blogs.slice().sort((a, b) => b.likes - a.likes));
+  // todo:
+  // remove the togglable
+  // just a list of react router links to the blogs
+  // the blogs take the style defined here
+  // finalize routing by adding home
+  // add navigation bar
+
+  const sortedBlogs = blogs.slice().sort((a, b) => b.likes - a.likes);
   return (
     <ul className="blogsList">
       <p>sorted by likes</p>
       {sortedBlogs.map((blog) => (
         <li key={blog.id} style={blogStyle}>
-          <h3 style={tittleStyle} data-testid='blogTitle'>
+          <h3 style={tittleStyle} data-testid="blogTitle">
             {blog.title}
             <Toggleable buttonLabel={'view'}>
               <a href={blog.url} target="_blank" rel="noopener noreferrer">
