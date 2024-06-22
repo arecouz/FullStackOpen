@@ -21,7 +21,7 @@ import {
   setBlogs,
 } from "./reducers/blogsReducer";
 import { setUser, removeUser } from "./reducers/userReducer";
-import { Route, Routes, useMatch, useNavigate } from "react-router-dom";
+import { Route, Routes, Link, useNavigate } from "react-router-dom";
 
 const App = () => {
   const [, setUsername] = useState("");
@@ -77,7 +77,7 @@ const App = () => {
         dispatch(
           deleteBlog(blogID, {
             headers: { Authorization: `Bearer ${user.token}` },
-          }),
+          })
         );
         doNotification("success", `${blogToDelete.title} successfully deleted`);
       } catch (error) {
@@ -96,7 +96,7 @@ const App = () => {
   };
 
   const Home = () => (
-    <>
+    <div className="space-y-3">
       <Toggleable buttonLabel={"Add  blog"} ref={noteFormRef}>
         <BlogForm handleAddNewBlog={addBlog}></BlogForm>
       </Toggleable>
@@ -105,14 +105,13 @@ const App = () => {
         handleBlogDelete={handleDeleteBlog}
         user={user}
       ></BlogsList>
-    </>
+    </div>
   );
 
   if (user === null) {
     return (
       <div>
-        <h1>Blogs List</h1>
-        <p className={`notification ${notification.type}`}>
+        <p className="bg-black text-3xl text-white flex items-center justify-center h-full">
           {notification.message}
         </p>
         <LoginForm doNotification={doNotification}></LoginForm>
@@ -121,10 +120,25 @@ const App = () => {
   }
 
   return (
-    <>
-      <h1> Blogs List</h1>
-      <div className="user-info">
-        <h2>{user.username}</h2>
+    <div className="bg-black min-h-screen p-4 text-white">
+      <div className="flex">
+        <h1 className="text-3xl font-bold underline text-yellow-400 space-x-6">
+          Blogs List
+        </h1>
+        <div className="space-x-9 pl-8">
+          <Link to="/" className="text-yellow-400 hover:text-white underline">
+            Blogs
+          </Link>
+          <Link
+            to="/users"
+            className="text-yellow-400 hover:text-white underline"
+          >
+            Users
+          </Link>
+        </div>
+      </div>
+      <div className="user-info flex items-center space-x-2 text-yellow-400 py-6">
+        <h2>{user.username}: </h2>
         <LogoutButton
           doNotification={doNotification}
           setUsername={setUsername}
@@ -143,7 +157,7 @@ const App = () => {
           element={<BlogPage incrementLikes={handleIncrementLikes} />}
         />
       </Routes>
-    </>
+    </div>
   );
 };
 

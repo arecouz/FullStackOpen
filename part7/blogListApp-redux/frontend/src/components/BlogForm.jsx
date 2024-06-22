@@ -19,38 +19,39 @@ const BlogForm = ({ handleAddNewBlog }) => {
   };
 
   return (
-    <form onSubmit={addBlog}>
+    <form onSubmit={addBlog} className="space-y-4 text-white">
       <div className="form-field">
-        <label>New Blog</label>
         <input
           type="text"
           value={title}
           name="title"
-          placeholder='title'
+          placeholder="title"
           onChange={(event) => setTitle(event.target.value)}
+          className="flex-grow p-2 border rounded-md bg-black"
         />
       </div>
       <div className="form-field">
-        <label>Author</label>
         <input
           type="text"
           value={author}
           name="author"
-          placeholder='author'
+          placeholder="author"
           onChange={({ target }) => setAuthor(target.value)}
+          className="flex-grow p-2 border rounded-md bg-black"
         />
       </div>
       <div className="form-field">
-        <label>url</label>
         <input
           type="text"
           value={url}
           name="url"
-          placeholder='url'
+          placeholder="url"
           onChange={({ target }) => setUrl(target.value)}
+          className="flex-grow p-2 border rounded-md bg-black"
         />
       </div>
-      <button>post</button>
+      <br></br>
+      <button className="p-2 bg-gray-900 text-white w-40">Post</button>
     </form>
   );
 };

@@ -1,45 +1,38 @@
-import { useEffect, useState } from 'react';
-import usersServices from '../services/users';
-import { Link, useMatch } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import usersServices from "../services/users";
+import { Link, useMatch } from "react-router-dom";
 
-const tableStyle = {
-  width: '100%',
-  borderCollapse: 'collapse',
-};
-
-const thStyle = {
-  border: '2px solid white',
-  padding: '8px',
-  backgroundColor: 'black',
-};
-
-const tdStyle = {
-  border: '2px solid white',
-  padding: '8px',
-  textAlign: 'center',
-};
-
-const UserPage = ({users}) => {
+const UserPage = ({ users }) => {
   return (
-    <>
-      <h1>Users:</h1>
-      <table style={tableStyle}>
-        <thead>
-          <tr>
-            <th style={thStyle}>User</th>
-            <th style={thStyle}>Blog Count</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td style={tdStyle}><Link to={user.id}>{user.username}</Link></td>
-              <td style={tdStyle}>{user.blogs.length}</td>
+    <div className="bg-black text-white min-h-screen py-8">
+      <h1 className="text-3xl font-bold text-yellow-400 mb-6 text-center">
+        Users:
+      </h1>
+      <div className="overflow-x-auto">
+        <table className="w-full table-auto" style={{ minWidth: "400px" }}>
+          <thead>
+            <tr className="bg-black">
+              <th className="border-2 border-white py-2 px-4">User</th>
+              <th className="border-2 border-white py-2 px-4">Blog Count</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id} className="bg-gray-800">
+                <td className="border-2 border-white py-2 px-4 text-center">
+                  <Link to={`/users/${user.id}`} className="text-yellow-400">
+                    {user.username}
+                  </Link>
+                </td>
+                <td className="border-2 border-white py-2 px-4 text-center">
+                  {user.blogs.length}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 };
 
