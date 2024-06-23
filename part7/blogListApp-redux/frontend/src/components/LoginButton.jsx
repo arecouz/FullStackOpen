@@ -4,11 +4,11 @@ const LoginButton = () => {
   const LoginButtonStyle = {
     "borderRadius": "8px",
     "border": "1px solid transparent",
-    "padding": "0.6em 1.2em",
+    "padding": "0.6em 7.2em",
     "fontSize": "1em",
     "fontWeight": "500",
    " fontFamily": "inherit",
-    "backgroundColor": "#464646",
+    "backgroundColor": "white",
     "cursor": "pointer",
     "transition": "border-color 0.25s",
   };

@@ -18,10 +18,13 @@ const Toggleable = forwardRef(({ buttonLabel, children}, ref) => {
       </div>
       <div style={{ display: toggle ? '' : 'none' }}>
         {children}
-        <button onClick={switchToggle}>Cancel</button>
+        <br></br>
+        <button className="p-2 bg-gray-900 text-white w-40" onClick={switchToggle}>Cancel</button>
       </div>
     </div>
   );
 });
 
 export default Toggleable;
+
+
