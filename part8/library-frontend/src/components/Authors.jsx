@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { ALL_AUTHORS } from '../queries';
 import SetBirthYearForm from './SetBirthYearForm'
+import {Table} from 'react-bootstrap'
 
 const Authors = () => {
   const result = useQuery(ALL_AUTHORS);
@@ -14,7 +15,7 @@ const Authors = () => {
   return (
     <div>
       <h2>authors</h2>
-      <table>
+      <Table striped>
         <tbody>
           <tr>
             <th></th>
@@ -29,7 +30,7 @@ const Authors = () => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
       <hr></hr>
       <h2>Set Birth Year:</h2>
       <SetBirthYearForm authors={authors}/>

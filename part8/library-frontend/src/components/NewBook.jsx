@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { ADD_BOOK, ALL_BOOKS, ALL_AUTHORS } from '../queries';
+import { Form, Button, Container } from 'react-bootstrap';
 
 const NewBook = () => {
   const [title, setTitle] = useState('');
@@ -34,43 +35,56 @@ const NewBook = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={submit}>
-        <div>
-          title
-          <input
+    <Container>
+      <h2>Add a New Book</h2>
+      <Form onSubmit={submit}>
+        <Form.Group controlId="formTitle">
+          <Form.Label>Title</Form.Label>
+          <Form.Control
+            type="text"
             value={title}
             onChange={({ target }) => setTitle(target.value)}
           />
-        </div>
-        <div>
-          author
-          <input
+        </Form.Group>
+
+        <Form.Group controlId="formAuthor">
+          <Form.Label>Author</Form.Label>
+          <Form.Control
+            type="text"
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
           />
-        </div>
-        <div>
-          published
-          <input
+        </Form.Group>
+
+        <Form.Group controlId="formPublished">
+          <Form.Label>Published</Form.Label>
+          <Form.Control
             type="number"
             value={published}
             onChange={({ target }) => setPublished(target.value)}
           />
-        </div>
-        <div>
-          <input
+        </Form.Group>
+
+        <Form.Group controlId="formGenre">
+          <Form.Label>Genre</Form.Label>
+          <Form.Control
+            type="text"
             value={genre}
             onChange={({ target }) => setGenre(target.value)}
           />
-          <button onClick={addGenre} type="button">
-            add genre
-          </button>
-        </div>
-        <div>genres: {genres.join(' ')}</div>
-        <button type="submit">create book</button>
-      </form>
-    </div>
+          <Button onClick={addGenre} type="button" className="mt-2">
+            Add Genre
+          </Button>
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label>Genres</Form.Label>
+          <div>{genres.join(' ')}</div>
+        </Form.Group>
+
+        <Button type="submit" className="mt-3">Create Book</Button>
+      </Form>
+    </Container>
   );
 };
 
