@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Link, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Link, Routes, Route, Navigate } from 'react-router-dom';
 import Authors from './components/Authors';
 import Books from './components/Books';
 import NewBook from './components/NewBook';
@@ -27,6 +27,7 @@ const App = () => {
         <Route path="/authors" element={<Authors />} />
         <Route path="/books" element={<Books />} />
         <Route path="/add_book" element={<NewBook />} />
+        <Route path='/' element={<Navigate to='/books'/>}/>
       </Routes>
     </div>
   );
