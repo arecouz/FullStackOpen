@@ -15,7 +15,7 @@ mongoose.set('strictQuery', false);
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log('connected to mongo'))
-  .catch((error) => console.log(error.message));
+  .catch((error) => console.log('mongo error', error.message));
 
 const typeDefs = `
 
@@ -31,7 +31,7 @@ const typeDefs = `
     name: String!
     born: Int
     id: ID!
-    bookCount: Int!
+    bookCount: Int
   }
     
   type User {
@@ -93,25 +93,31 @@ const resolvers = {
     },
 
     allBooks: async (root, args) => {
-      if (!args.author && !args.genre) {
-        return await Book.find({});
-      }
-      let query = {};
-      if (args.author) {
-        const author = await Author.findOne({ name: args.author });
-        if (!author) {
-          console.log('Author not found');
-          return [];
+      try {
+        if (!args.author && !args.genre) {
+          return await Book.find({}).populate('author');
         }
-        console.log('author', author);
-        query.author = author._id;
+        let query = {};
+        if (args.author) {
+          const author = await Author.findOne({ name: args.author });
+          if (!author) {
+            console.log('Author not found');
+            return [];
+          }
+          console.log('author', author);
+          query.author = author._id;
+        }
+        if (args.genre) {
+          query.genres = args.genre;
+        }
+        console.log('get here?');
+        const books = await Book.find(query).populate('author');
+        console.log('populated books: ', books);
+        return books;
+      } catch (error) {
+        console.error('Error fetching books:', error);
+        throw new GraphQLError(error);
       }
-      if (args.genre) {
-        query.genres = args.genre;
-      }
-
-      const books = await Book.find(query);
-      return books;
     },
 
     authorCount: async () => {
@@ -131,7 +137,10 @@ const resolvers = {
 
   Mutation: {
     createUser: async (root, args) => {
-      const user = new User({ username: args.username });
+      const user = new User({
+        username: args.username,
+        favoriteGenre: args.favoriteGenre,
+      });
       try {
         await user.save();
       } catch (error) {
@@ -156,39 +165,67 @@ const resolvers = {
     },
 
     addBook: async (root, args, context) => {
-      const currentUser = context.currentUser
+      console.log('user: ', context.currentUser);
+      const currentUser = context.currentUser;
       if (!currentUser) {
-        throw new GraphQLError('not authenticated')
+        throw new GraphQLError('not authenticated');
       }
-      let author = await Author.findOne({ name: args.author });
-      if (!author) {
-        author = new Author({ name: args.author });
-      }
+
+      // find or create the author
+      let author;
       try {
-        await author.save();
+        author = await Author.findOne({ name: args.author });
+        if (!author) {
+          author = new Author({ name: args.author });
+          await author.save();
+        }
       } catch (error) {
-        console.log(error);
-        throw new GraphQLError(error, {
+        console.log('Error finding or saving author:', error);
+        throw new GraphQLError('Error finding or saving author', {
           extensions: {
             code: 'BAD_USER_INPUT',
-            invalidArgs: args.name,
+            invalidArgs: args.author,
             error,
           },
         });
       }
-      let book = new Book({ ...args, author });
+
+      // create and save the book
+      let book = new Book({ ...args, author: author._id });
       try {
         await book.save();
       } catch (error) {
-        throw new GraphQLError(error);
+        console.log('Error saving book:', error);
+        throw new GraphQLError('Error saving book', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.title,
+            error,
+          },
+        });
       }
+
+      // populate the author field before returning
+      try {
+        book = await book.populate('author');
+        console.log('populated', book);
+      } catch (error) {
+        console.log('Error populating author:', error);
+        throw new GraphQLError('Error populating author', {
+          extensions: {
+            code: 'INTERNAL_SERVER_ERROR',
+            error,
+          },
+        });
+      }
+
       return book;
     },
 
     editAuthor: async (root, args, context) => {
-      const currentUser = context.currentUser
+      const currentUser = context.currentUser;
       if (!currentUser) {
-        throw new GraphQLError('not authenticated')
+        throw new GraphQLError('not authenticated');
       }
       try {
         const updatedAuthor = await Author.findOneAndUpdate(
@@ -229,13 +266,16 @@ startStandaloneServer(server, {
   context: async ({ req, res }) => {
     const auth = req ? req.headers.authorization : null;
     if (auth && auth.startsWith('Bearer ')) {
-      const decodedToken = jwt.verify(
-        auth.substring(7),
-        process.env.JWT_SECRET
-      );
-      const currentUser = await User.findById(decodedToken.id);
-      return { currentUser };
-    } else {
+      try {
+        const decodedToken = jwt.verify(
+          auth.substring(7),
+          process.env.JWT_SECRET
+        );
+        const currentUser = await User.findById(decodedToken.id);
+        return { currentUser };
+      } catch (error) {
+        console.log('user authentication error', error);
+      }
     }
   },
 }).then(({ url }) => {

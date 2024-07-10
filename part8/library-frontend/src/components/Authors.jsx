@@ -1,9 +1,9 @@
 import { useQuery } from '@apollo/client';
 import { ALL_AUTHORS } from '../queries';
-import SetBirthYearForm from './SetBirthYearForm'
-import {Table} from 'react-bootstrap'
+import SetBirthYearForm from './SetBirthYearForm';
+import { Table } from 'react-bootstrap';
 
-const Authors = () => {
+const Authors = ({ isAuthenticated }) => {
   const result = useQuery(ALL_AUTHORS);
 
   if (result.loading) {
@@ -11,7 +11,9 @@ const Authors = () => {
   }
 
   const authors = result.data.allAuthors;
-  
+
+  console.log("test", isAuthenticated)
+
   return (
     <div>
       <h2>authors</h2>
@@ -31,9 +33,13 @@ const Authors = () => {
           ))}
         </tbody>
       </Table>
-      <hr></hr>
-      <h2>Set Birth Year:</h2>
-      <SetBirthYearForm authors={authors}/>
+      {isAuthenticated && (
+        <>
+          <hr></hr>
+          <h2>Set Birth Year:</h2>
+          <SetBirthYearForm authors={authors} />
+        </>
+      )}
     </div>
   );
 };
