@@ -40,7 +40,7 @@ const calculateExercise = (
   const totalHours = weeklyExercise.reduce((acc, curr) => acc + curr, 0);
   const average = totalHours / periodLength;
   const trainingDays = weeklyExercise.filter((n) => n != 0).length;
-  const success = average > goal;
+  const success = average >= goal;
   const rating = calculateRating(totalHours);
   const ratingDescription = calculateRatingDescription(rating);
   const target = goal;

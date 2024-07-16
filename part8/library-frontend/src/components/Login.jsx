@@ -16,12 +16,13 @@ const Login = ({ isAuthorized, setAuthorization }) => {
   });
 
   useEffect(() => {
+    console.log("rd", result.data)
     if (result.data) {
       const token = result.data.login.value;
       setAuthorization(token);
       localStorage.setItem('user', token);
       nav('/books');
-    }
+    } 
   }, [result.data]);
 
   const handleLogin = async (event) => {

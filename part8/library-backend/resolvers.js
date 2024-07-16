@@ -2,6 +2,7 @@ const { GraphQLError, NoDeprecatedCustomRule } = require('graphql');
 const jwt = require('jsonwebtoken');
 const Book = require('./mongo_models/book');
 const Author = require('./mongo_models/author');
+const User = require('./mongo_models/user');
 
 const { PubSub } = require('graphql-subscriptions');
 const pubsub = new PubSub();
@@ -34,7 +35,6 @@ const resolvers = {
         if (args.genre) {
           query.genres = args.genre;
         }
-        console.log('get here?');
         const books = await Book.find(query).populate('author');
         console.log('populated books: ', books);
         return books;
@@ -49,13 +49,16 @@ const resolvers = {
     },
 
     allAuthors: async () => {
-      return await Author.find({});
+      const authors = await Author.find({}).populate('books');
+      console.log(authors);
+      return authors;
     },
   },
 
   Author: {
-    bookCount: (author) => {
-      return 99;
+    bookCount: async (root) => {
+      console.log(root.books.length);
+      return root.books.length;
     },
   },
 
@@ -118,6 +121,7 @@ const resolvers = {
       let book = new Book({ ...args, author: author._id });
       try {
         await book.save();
+        await author.updateOne({ $push: { books: book } });
       } catch (error) {
         console.log('Error saving book:', error);
         throw new GraphQLError('Error saving book', {

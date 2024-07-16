@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   BrowserRouter as Router,
   Link,
@@ -10,19 +10,30 @@ import Authors from './components/Authors';
 import Books from './components/Books';
 import NewBook from './components/NewBook';
 import Login from './components/Login';
-import Account from './components/Account'
+import Account from './components/Account';
 import { Navbar, Container, Nav, Button } from 'react-bootstrap';
 import { useApolloClient } from '@apollo/client';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery, useSubscription } from '@apollo/client';
 
-import { ME } from './queries';
+import { ALL_BOOKS, BOOK_ADDED } from './queries';
 
 const App = () => {
   const client = useApolloClient();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const result = useQuery(ME)
-  if (result.data) {console.log(result.data)}
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      const newBook = data.data.bookAdded;
+      window.alert(`New Book Added: ${newBook.title}`);
+
+      const currentBooksData = client.readQuery({ query: ALL_BOOKS });
+      client.cache.updateQuery({ query: ALL_BOOKS }, (existingBooks) => {
+        return {
+          allBooks: [...existingBooks.allBooks, newBook],
+        };
+      });
+    },
+  });
 
   const handleLogout = () => {
     setIsAuthenticated(null);
@@ -30,7 +41,6 @@ const App = () => {
     client.resetStore();
   };
 
-  console.log('user', localStorage.user);
 
   return (
     <div className="container">
@@ -49,7 +59,7 @@ const App = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-            <Nav.Link as={Link} to="/account">
+              <Nav.Link as={Link} to="/account">
                 Account
               </Nav.Link>
               <Nav.Link as={Link} to="/authors">
@@ -67,7 +77,7 @@ const App = () => {
       </Navbar>
 
       <Routes>
-      <Route
+        <Route
           path="/account"
           element={isAuthenticated ? <Account /> : <Navigate to="/login" />}
         />

@@ -1,6 +1,6 @@
-import { useQuery } from '@apollo/client';
+import { useQuery, useSubscription } from '@apollo/client';
 import { useState, useEffect } from 'react';
-import { ALL_BOOKS, ALL_BOOKS_GENRE } from '../queries';
+import { ALL_BOOKS, ALL_BOOKS_GENRE, BOOK_ADDED } from '../queries';
 import { Table } from 'react-bootstrap';
 import GenreFilter from './GenreFilter';
 
@@ -25,6 +25,7 @@ const Books = () => {
 
   const books = allBooksData.allBooks;
   let genres = books.map((book) => book.genres).flat();
+  genres = [...new Set(genres)] // remove duplicates
   genres.push('All books');
 
   const filteredBooks = selectedGenre === 'All books' ? books : booksByGenreData.allBooks;

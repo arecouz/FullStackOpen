@@ -12,8 +12,6 @@ const Authors = ({ isAuthenticated }) => {
 
   const authors = result.data.allAuthors;
 
-  console.log("test", isAuthenticated)
-
   return (
     <div>
       <h2>authors</h2>
