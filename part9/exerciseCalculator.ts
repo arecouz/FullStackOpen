@@ -13,10 +13,10 @@ interface TrainingDescription {
   average: number;
 }
 
-const calculateRating = (totalHours: number): 1 | 2 | 3 => {
-  if (totalHours < 5) {
+const calculateRating = (average: number): 1 | 2 | 3 => {
+  if (average < 1) {
     return 1;
-  } else if (totalHours < 10) {
+  } else if (average < 2) {
     return 2;
   } else return 3;
 };
@@ -41,7 +41,7 @@ const calculateExercise = (
   const average = totalHours / periodLength;
   const trainingDays = weeklyExercise.filter((n) => n != 0).length;
   const success = average >= goal;
-  const rating = calculateRating(totalHours);
+  const rating = calculateRating(average);
   const ratingDescription = calculateRatingDescription(rating);
   const target = goal;
   return {
@@ -56,7 +56,6 @@ const calculateExercise = (
 };
 
 const parseArguments = (args: string[]): ExerciseValues => {
-  if (args.length > 10) throw new Error('too many arguments');
   if (args.length < 4) throw new Error('not enough arguments');
 
   const areAllNumbers = (arr: string[]): boolean =>
