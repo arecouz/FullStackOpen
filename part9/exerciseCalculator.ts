@@ -1,4 +1,6 @@
-interface ExerciseValues {
+type Rating = 1 | 2 | 3;
+
+export interface ExerciseValues {
   target: number;
   dailyExercise: number[];
 }
@@ -7,13 +9,13 @@ interface TrainingDescription {
   periodLength: number;
   trainingDays: number;
   success: boolean;
-  rating: 1 | 2 | 3;
+  rating: Rating;
   ratingDescription: string;
   target: number;
   average: number;
 }
 
-const calculateRating = (average: number): 1 | 2 | 3 => {
+const calculateRating = (average: number): Rating => {
   if (average < 1) {
     return 1;
   } else if (average < 2) {
@@ -21,7 +23,7 @@ const calculateRating = (average: number): 1 | 2 | 3 => {
   } else return 3;
 };
 
-const calculateRatingDescription = (rating: number) => {
+const calculateRatingDescription = (rating: Rating): string => {
   switch (rating) {
     case 1:
       return 'bad';
@@ -32,7 +34,7 @@ const calculateRatingDescription = (rating: number) => {
   }
 };
 
-const calculateExercise = (
+export const calculateExercise = (
   goal: number,
   weeklyExercise: number[]
 ): TrainingDescription => {
@@ -70,14 +72,16 @@ const parseArguments = (args: string[]): ExerciseValues => {
   };
 };
 
-try {
-  console.log('Exercise Calculation \n');
-  let values: ExerciseValues = parseArguments(process.argv);
-  console.log(calculateExercise(values.target, values.dailyExercise));
-} catch (error: unknown) {
-  let errorMessage = 'ERROR \n';
-  if (error instanceof Error) {
-    errorMessage +=  error.message;
+if (require.main === module) {
+  try {
+    console.log('Exercise Calculation \n');
+    const values: ExerciseValues = parseArguments(process.argv);
+    console.log(calculateExercise(values.target, values.dailyExercise));
+  } catch (error: unknown) {
+    let errorMessage = 'ERROR \n';
+    if (error instanceof Error) {
+      errorMessage += error.message;
+    }
+    console.log(errorMessage);
   }
-  console.log(errorMessage);
 }
