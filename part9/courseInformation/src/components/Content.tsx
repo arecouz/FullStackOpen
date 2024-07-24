@@ -15,6 +15,3 @@ const Content = ({ courseParts }: { courseParts: Course[] }) => {
 export default Content;
 
 
-// TODO: 
-
-// Exercise 9.15
