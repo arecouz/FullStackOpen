@@ -1,28 +1,56 @@
 import { useState } from "react";
-import { Box, Table, Button, TableHead, Typography, TableCell, TableRow, TableBody } from '@mui/material';
-import axios from 'axios';
+import {
+  Box,
+  Table,
+  Button,
+  TableHead,
+  Typography,
+  TableCell,
+  TableRow,
+  TableBody,
+} from "@mui/material";
+import axios from "axios";
 
-import { PatientFormValues, Patient } from "../../types";
+import { PatientFormValues, Patient, Gender } from "../../types";
 import AddPatientModal from "../AddPatientModal";
+import PatientModal from "../PatientModal";
 
 import HealthRatingBar from "../HealthRatingBar";
 
 import patientService from "../../services/patients";
 
 interface Props {
-  patients : Patient[]
-  setPatients: React.Dispatch<React.SetStateAction<Patient[]>>
+  patients: Patient[];
+  setPatients: React.Dispatch<React.SetStateAction<Patient[]>>;
 }
 
-const PatientListPage = ({ patients, setPatients } : Props ) => {
-
+const PatientListPage = ({ patients, setPatients }: Props) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [patientModalOpen, setPatientModalOpen] = useState<boolean>(false);
   const [error, setError] = useState<string>();
+  const [selectedPatient, setSelectedPatient] = useState<Patient>({
+    id: "",
+    name: "",
+    occupation: "",
+    gender: Gender.Other,
+    ssn: "",
+    dateOfBirth: "",
+    entries: [],
+  });
 
   const openModal = (): void => setModalOpen(true);
+  const openPatientModal = (patient: Patient): void => {
+    setSelectedPatient(patient);
+    setPatientModalOpen(true);
+  };
 
   const closeModal = (): void => {
     setModalOpen(false);
+    setError(undefined);
+  };
+
+  const closePatientModal = (): void => {
+    setPatientModalOpen(false);
     setError(undefined);
   };
 
@@ -34,7 +62,10 @@ const PatientListPage = ({ patients, setPatients } : Props ) => {
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
         if (e?.response?.data && typeof e?.response?.data === "string") {
-          const message = e.response.data.replace('Something went wrong. Error: ', '');
+          const message = e.response.data.replace(
+            "Something went wrong. Error: ",
+            ""
+          );
           console.error(message);
           setError(message);
         } else {
@@ -48,9 +79,9 @@ const PatientListPage = ({ patients, setPatients } : Props ) => {
   };
 
   return (
-    <div className="App">
+    <div className='App'>
       <Box>
-        <Typography align="center" variant="h6">
+        <Typography align='center' variant='h6'>
           Patient list
         </Typography>
       </Box>
@@ -66,7 +97,15 @@ const PatientListPage = ({ patients, setPatients } : Props ) => {
         <TableBody>
           {Object.values(patients).map((patient: Patient) => (
             <TableRow key={patient.id}>
-              <TableCell>{patient.name}</TableCell>
+              <TableCell>
+                {" "}
+                <Button
+                  variant='text'
+                  onClick={() => openPatientModal(patient)}
+                >
+                  {patient.name}
+                </Button>
+              </TableCell>
               <TableCell>{patient.gender}</TableCell>
               <TableCell>{patient.occupation}</TableCell>
               <TableCell>
@@ -82,7 +121,12 @@ const PatientListPage = ({ patients, setPatients } : Props ) => {
         error={error}
         onClose={closeModal}
       />
-      <Button variant="contained" onClick={() => openModal()}>
+      <PatientModal
+        modalOpen={patientModalOpen}
+        onClose={closePatientModal}
+        patient={selectedPatient}
+      />
+      <Button variant='contained' onClick={() => openModal()}>
         Add New Patient
       </Button>
     </div>
