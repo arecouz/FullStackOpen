@@ -6,24 +6,22 @@ import {
   TableRow,
   TableBody,
   Card,
-  CardContent,
-  CardHeader,
+  Button,
 } from '@mui/material';
+
 import patientServices from '../../services/patients';
-import diagnosisServices from '../../services/diagnosis';
+import AddEntryModal from '../AddEntryModal';
+
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { Diagnosis, Entry, Patient } from '../../types';
+import EntryInfo from './EntryInfo';
+import { Patient, Entry } from '../../types';
 
 const PatientPage = () => {
   const [patient, setPatient] = useState<Patient | null>(null);
-  const [diagnosisList, setDiagnosisList] = useState<Diagnosis[]>([]);
+  const [entryModal, setEntryModalOpen] = useState<boolean>(false);
 
   const { id } = useParams();
-
-  useEffect(() => {
-    diagnosisServices.getAll().then((response) => setDiagnosisList(response));
-  }, []);
 
   useEffect(() => {
     if (id) {
@@ -31,82 +29,60 @@ const PatientPage = () => {
     }
   }, [id]);
 
+  const openEntryModal = (): void => setEntryModalOpen(true);
+
+  const closeEntryModal = (): void => {
+    setEntryModalOpen(false);
+  };
+
   if (!patient) {
     return <></>;
   }
 
-  const getDiagnosisDescription = (code: string): string | undefined => {
-    const diagnosis = diagnosisList.find((d) => d.code === code);
-    return diagnosis ? diagnosis.name : undefined;
-  };
-
   return (
     <div>
-      <Box>
-        <Typography align="center" variant="h6">
-          {patient.name}
-        </Typography>
-      </Box>
-      <Table style={{ marginBottom: '1em' }}>
-        <TableBody>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>{patient.name}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Date of Birth</TableCell>
-            <TableCell>{patient.dateOfBirth}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>SSN</TableCell>
-            <TableCell>{patient.ssn}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Gender</TableCell>
-            <TableCell>{patient.gender}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Occupation</TableCell>
-            <TableCell>{patient.occupation}</TableCell>
-          </TableRow>
-          {/* Add more rows as necessary */}
-        </TableBody>
-      </Table>
-      <br />
-      {patient.entries.length !== 0 && (
-        <>
-          {Object.values(patient.entries).map((entry: Entry) => (
-            <Card key={entry.id} style={{ marginBottom: '1em' }}>
-              <CardHeader title={`${entry.date}`} align="center" />
-              <CardContent>
-                <Table>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>{entry.description}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-                {entry.diagnosisCodes && (
-                  <Table>
-                    <TableBody>
-                      {Object.values(entry.diagnosisCodes).map(
-                        (code: string) => (
-                          <TableRow key={code}>
-                            <TableCell>{code}</TableCell>
-                            <TableCell align="center">
-                              {getDiagnosisDescription(code)}
-                            </TableCell>
-                          </TableRow>
-                        )
-                      )}
-                    </TableBody>
-                  </Table>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </>
-      )}
+      <Card style={{ margin: '1em', backgroundColor: '#f5f5f5' }}>
+        <Box>
+          <Typography align="center" variant="h3">
+            {patient.name}
+          </Typography>
+        </Box>
+        <Table style={{ marginBottom: '1em' }}>
+          <TableBody>
+            <TableRow>
+              <TableCell>Date of Birth</TableCell>
+              <TableCell>{patient.dateOfBirth}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>SSN</TableCell>
+              <TableCell>{patient.ssn}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Gender</TableCell>
+              <TableCell>{patient.gender}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Occupation</TableCell>
+              <TableCell>{patient.occupation}</TableCell>
+            </TableRow>
+            {/* Add more rows as necessary */}
+          </TableBody>
+        </Table>
+      </Card>
+      <>
+        <Box padding="8px">
+          <Typography align="center" variant="h4">
+            <Button variant="outlined" onClick={() => openEntryModal()}>
+              add entry
+            </Button>
+          </Typography>
+          <AddEntryModal modalOpen={entryModal} onClose={closeEntryModal} />
+          <br></br>
+        </Box>
+        {Object.values(patient.entries).map((entry: Entry) => (
+          <EntryInfo entry={entry} key={entry.id} />
+        ))}
+      </>
     </div>
   );
 };
