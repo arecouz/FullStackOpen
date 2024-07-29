@@ -15,19 +15,26 @@ import AddEntryModal from '../AddEntryModal';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import EntryInfo from './EntryInfo';
-import { Patient, Entry } from '../../types';
+import { Patient, Entry, NewEntry } from '../../types';
 
 const PatientPage = () => {
   const [patient, setPatient] = useState<Patient | null>(null);
   const [entryModal, setEntryModalOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
-    if (id) {
-      patientServices.getOne(id).then((response) => setPatient(response));
+    if (!id) {
+      setError('Patient ID is missing');
+      return;
     }
-  }, [id]);
+
+    patientServices
+      .getOne(id)
+      .then((response) => setPatient(response))
+      .catch(() => setError('Failed to fetch patient'));
+  }, [id, patient]);
 
   const openEntryModal = (): void => setEntryModalOpen(true);
 
@@ -35,8 +42,41 @@ const PatientPage = () => {
     setEntryModalOpen(false);
   };
 
+  const submitNewEntry = async (values: NewEntry) => {
+    console.log('submitNewEntry', values);
+    if (!id) {
+      setError('Patient ID is missing');
+      setEntryModalOpen(false);
+      return;
+    }
+    try {
+      const newEntry = await patientServices.createEntry(values, id);
+      console.log(newEntry);
+      setEntryModalOpen(false);
+    } catch (e: unknown) {
+      setEntryModalOpen(false);
+      console.log(e);
+    }
+  };
+
+  if (error) {
+    return (
+      <Box padding="8px">
+        <Typography color="error" align="center" variant="h5">
+          {error}
+        </Typography>
+      </Box>
+    );
+  }
+
   if (!patient) {
-    return <></>;
+    return (
+      <Box padding="8px">
+        <Typography align="center" variant="h5">
+          Loading...
+        </Typography>
+      </Box>
+    );
   }
 
   return (
@@ -76,7 +116,11 @@ const PatientPage = () => {
               add entry
             </Button>
           </Typography>
-          <AddEntryModal modalOpen={entryModal} onClose={closeEntryModal} />
+          <AddEntryModal
+            modalOpen={entryModal}
+            onClose={closeEntryModal}
+            onSubmit={submitNewEntry}
+          />
           <br></br>
         </Box>
         {Object.values(patient.entries).map((entry: Entry) => (

@@ -168,13 +168,13 @@ export const toNewEntry = (object: unknown): NewEntry => {
         ? {
             description: parseString(object.description),
             date: parseDate(object.date),
-            specialist: parseString(object.date),
+            specialist: parseString(object.specialist),
             diagnosisCodes: parseDiagnosisCodes(object.diagnosisCodes),
           }
         : {
             description: parseString(object.description),
             date: parseDate(object.date),
-            specialist: parseString(object.date),
+            specialist: parseString(object.specialist),
           };
     if ('type' in object) {
       switch (object.type) {

@@ -12,7 +12,7 @@ const HospitalEntryRender = ({ entry }: { entry: HospitalEntry }) => {
             <TableCell>{entry.specialist}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>{entry.discharge.date}</TableCell>
+            <TableCell>discharge ({entry.discharge.date})</TableCell>
             <TableCell>{entry.discharge.criteria}</TableCell>
           </TableRow>
         </TableBody>
