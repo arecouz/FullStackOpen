@@ -1,30 +1,45 @@
-import { View, StyleSheet, Pressable } from 'react-native';
-import Constants from 'expo-constants';
+import { View, StyleSheet, Pressable, ScrollView } from 'react-native';
 import Text from './Text';
 import theme from '../theme';
+import { Link } from 'react-router-native';
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: Constants.statusBarHeight,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    borderBottomWidth: 4,
-    // ...
+    paddingTop: 25,
+    borderBottomWidth: 32,
+    backgroundColor: 'black',
+  },
+  link: {
+    marginHorizontal: 10, // Adjust this value to increase or decrease space between links
   },
   text: {
     fontSize: theme.fontSizes.heading,
     fontWeight: 'bold',
+    color: 'white',
+    textDecorationLine: 'underline',
   },
-  // ...
 });
 
 const AppBar = () => {
-  console.log(theme.fontSizes.heading);
   return (
     <View style={styles.container}>
-      <Pressable>
-        <Text style={styles.text}>Repositories</Text>
-      </Pressable>
+      <ScrollView horizontal>
+        <Pressable style={styles.link}>
+          <Link to="/signIn">
+            <Text style={styles.text}>Sign In</Text>
+          </Link>
+        </Pressable>
+        <Pressable style={styles.link}>
+          <Link to="/">
+            <Text style={styles.text}>Home</Text>
+          </Link>
+        </Pressable>
+        <Pressable style={styles.link}>
+          <Link to="/bmi">
+            <Text style={styles.text}>bmi</Text>
+          </Link>
+        </Pressable>
+      </ScrollView>
     </View>
   );
 };

@@ -9,16 +9,17 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    padding: 25,
-    borderBottomWidth: 12,
-    borderBottomColor: theme.colors.primary,
+    padding: 12,
+    borderBottomWidth: 1,
+    paddingBottom: 30,
+    borderBottomColor: 'black',
   },
   text: {
     marginBottom: 0,
   },
   description: {
     fontWeight: theme.fontWeights.bold,
-    marginBottom: 10, // Add some space between the description and the rest
+    marginBottom: 25, // Add some space between the description and the rest
   },
   heading: {
     flexDirection: 'column',
@@ -27,30 +28,28 @@ const styles = StyleSheet.create({
   },
   avatarAndBadgesContainer: {
     flexDirection: 'row',
-    alignItems: 'center', // Ensure avatar and badges are vertically aligned
+    alignItems: 'center',
   },
   avatar: {
     width: 100,
     height: 100,
-    marginRight: 15,
+    marginRight: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
   info: {
-    flex: 1, // Make sure this view takes up the remaining space
+    flex: 1, 
   },
   badgeContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap', // Allow wrapping onto new rows
+    flexWrap: 'wrap', 
     flex: 1,
   },
   badge: {
     justifyContent: 'center',
     alignItems: 'center',
-    flexGrow: 1, // Ensure the badge grows to take up available space
-    flexBasis: '20%', // Allow each badge to take up 20% of the row by default
-    padding: 5,
-    margin: 5, // Add margin to create space between badges
+    flexGrow: 1, 
+    flexBasis: '20%', 
   },
   badgeText: {
     textAlign: 'center',
@@ -100,12 +99,12 @@ const RepositoryItem = ({ item }) => {
 
   return (
     <View style={styles.container}>
-              <View style={styles.badge}>
-          <Text style={styles.badgeText} fontWeight="bold">
-            {getLanguageIcon(item.language)}
-          </Text>
-      <View style={styles.heading}>
-        <Text style={styles.description}>{item.description}</Text>
+      <View style={styles.badge}>
+        <Text style={styles.badgeText} fontWeight="bold">
+          {getLanguageIcon(item.language)}
+        </Text>
+        <View style={styles.heading}>
+          <Text style={styles.description}>{item.description}</Text>
         </View>
       </View>
 
