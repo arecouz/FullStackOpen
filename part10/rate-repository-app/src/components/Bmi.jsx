@@ -1,14 +1,12 @@
-import { useState, useEffect } from "react";
-import RepositoryItem from "./RepositoryItem";
+import { useState, useEffect } from 'react';
+import RepositoryItem from './RepositoryItem';
 import { FlatList } from 'react-native';
-
 
 const RepositoryList = () => {
   const [repositories, setRepositories] = useState();
 
   const fetchRepositories = async () => {
-    // Replace the IP address part with your own IP address!
-    const response = await fetch("http://192.168.1.197:5000/api/repositories");
+    const response = await fetch('http://192.168.1.197:5000/api/repositories');
     const json = await response.json();
 
     console.log(json);
@@ -26,10 +24,10 @@ const RepositoryList = () => {
     : [];
 
   return (
-      <FlatList
-        data={repositoryNodes}
-        renderItem={({ item }) => <RepositoryItem item={item} />}
-      />
+    <FlatList
+      data={repositoryNodes}
+      renderItem={({ item }) => <RepositoryItem item={item} />}
+    />
   );
 };
 

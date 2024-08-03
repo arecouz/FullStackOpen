@@ -5,11 +5,9 @@ import RepositoryList from './RepositoryList';
 import AppBar from './AppBar';
 import SignInForm from './SignIn';
 import Bmi from './Bmi';
-import Constants from 'expo-constants';
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: Constants.statusBarHeight,
     flexGrow: 1,
     flexShrink: 1,
   },
