@@ -1,24 +1,18 @@
-import { useState, useEffect } from 'react';
 import RepositoryItem from './RepositoryItem';
 import { FlatList } from 'react-native';
+import Text from './Text';
+
+import { useQuery } from '@apollo/client';
+import { GET_REPOSITORIES } from '../graphQl/queries';
 
 const RepositoryList = () => {
-  const [repositories, setRepositories] = useState();
+  const { repositories, error, loading } = useQuery(GET_REPOSITORIES);
 
-  const fetchRepositories = async () => {
-    const response = await fetch('http://192.168.1.197:5000/api/repositories');
-    const json = await response.json();
+  if (error) return <Text>{error.message}</Text>;
+  if (loading) return <Text>loading</Text>;
 
-    console.log(json);
+  console.log(repositories);
 
-    setRepositories(json);
-  };
-
-  useEffect(() => {
-    fetchRepositories();
-  }, []);
-
-  // Get the nodes from the edges array
   const repositoryNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
     : [];

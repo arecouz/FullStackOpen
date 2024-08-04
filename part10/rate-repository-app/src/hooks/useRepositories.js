@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { api } from '../constants';
 
 const useRepositories = () => {
   const [repositories, setRepositories] = useState();
@@ -8,7 +9,7 @@ const useRepositories = () => {
     setLoading(true);
 
     // Replace the IP address part with your own IP address!
-    const response = await fetch('http://192.168.1.197:5000/api/repositories');
+    const response = await fetch(api);
     const json = await response.json();
 
     setLoading(false);

@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontWeight: theme.fontWeights.bold,
-    marginBottom: 15, // Add some space between the description and the rest
+    marginBottom: 15, 
     padding: 25,
   },
   heading: {
