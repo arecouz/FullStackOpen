@@ -1,4 +1,4 @@
-import { View, StyleSheet, Platform } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Route, Routes, Navigate } from 'react-router-native';
 
 import RepositoryList from './RepositoryList';
@@ -13,7 +13,6 @@ const styles = StyleSheet.create({
   },
 });
 
-console.log(Platform.OS);
 
 const Main = () => {
   return (

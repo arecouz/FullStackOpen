@@ -2,6 +2,10 @@ import { Pressable, View, Text, TextInput, StyleSheet } from 'react-native';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import theme from '../theme';
+import useSignIn from '../hooks/useSignIn';
+import { useNavigate } from 'react-router-native';
+import { useQuery } from '@apollo/client';
+import { ME } from '../graphQl/queries';
 
 const styles = StyleSheet.create({
   container: {
@@ -31,13 +35,22 @@ const styles = StyleSheet.create({
 });
 
 const SignInForm = () => {
+  const [signIn] = useSignIn();
+  const navigate = useNavigate();
+  const { data } = useQuery(ME);
   const initialValues = {
     username: '',
     password: '',
   };
 
-  const onSubmit = (values) => {
-    console.log(values);
+  const onSubmit = async (credentials) => {
+    try {
+      const response = await signIn(credentials);
+      console.log('signIn response: ', response.data);
+      navigate('/');
+    } catch (e) {
+      console.log(e.message);
+    }
   };
 
   const validationSchema = yup.object().shape({
@@ -59,6 +72,7 @@ const SignInForm = () => {
 
   return (
     <View style={styles.container}>
+      <Text>{JSON.stringify(data)}</Text>
       <TextInput
         style={[
           styles.input,
@@ -88,10 +102,9 @@ const SignInForm = () => {
         <Text style={styles.buttonText}>Log In</Text>
       </Pressable>
       <View style={styles.error}>
-        {formik.touched.username &&
-          formik.errors.username &&
-          (console.log('error'),
-          (<Text style={styles.errorText}>{formik.errors.username}</Text>))}
+        {formik.touched.username && formik.errors.username && (
+          <Text style={styles.errorText}>{formik.errors.username}</Text>
+        )}
         {formik.touched.password && formik.errors.password && (
           <Text style={styles.errorText}>{formik.errors.password}</Text>
         )}
