@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, ActivityIndicator, FlatList, StyleSheet } from 'react-native';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import Text from './Text';
 import useRepositories from '../hooks/useRepositories';
-import RepositoryItem from './RepositoryItem';
+import RepositoryListContainer from './RepositoryListContainer';
 
 const RepositoryList = () => {
   const { data, loading, error } = useRepositories();
@@ -27,16 +27,9 @@ const RepositoryList = () => {
     );
   }
 
-  const repositoryNodes = data
-    ? data.repositories.edges.map((edge) => edge.node)
-    : [];
+  const repositories = data.repositories;
 
-  return (
-    <FlatList
-      data={repositoryNodes}
-      renderItem={({ item }) => <RepositoryItem item={item} />}
-    />
-  );
+  return <RepositoryListContainer repositories={repositories} />;
 };
 
 const styles = StyleSheet.create({

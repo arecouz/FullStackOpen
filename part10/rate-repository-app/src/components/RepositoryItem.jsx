@@ -1,113 +1,113 @@
-import { View, StyleSheet, Image } from "react-native";
-import Text from "./Text";
-import theme from "../theme";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import Entypo from "@expo/vector-icons/Entypo";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { View, StyleSheet, Image } from 'react-native';
+import Text from './Text';
+import theme from '../theme';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import Entypo from '@expo/vector-icons/Entypo';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "column",
+    flexDirection: 'column',
     padding: 12,
     borderBottomWidth: 1,
     paddingBottom: 30,
-    borderBottomColor: "black",
+    borderBottomColor: 'black',
   },
   text: {
     marginBottom: 0,
   },
   description: {
     fontWeight: theme.fontWeights.bold,
-    marginBottom: 15, 
+    marginBottom: 15,
     padding: 25,
   },
   heading: {
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center",
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   avatarAndBadgesContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   avatar: {
     width: 100,
     height: 100,
     marginRight: 2,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   info: {
     flex: 1,
   },
   badgeContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     flex: 1,
   },
   badge: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     flexGrow: 1,
-    flexBasis: "20%",
+    flexBasis: '20%',
   },
   badgeText: {
-    textAlign: "center",
+    textAlign: 'center',
   },
 });
 
 const RepositoryItem = ({ item }) => {
   const formatNumber = (n) => {
     if (n >= 1000 && n < 1000000) {
-      return (n / 1000).toFixed(1) + "k";
+      return (n / 1000).toFixed(1) + 'k';
     } else if (n >= 1000000 && n < 1000000000) {
-      return (n / 1000000).toFixed(1) + "M";
+      return (n / 1000000).toFixed(1) + 'M';
     }
     return n.toString();
   };
 
   const getLanguageIcon = (language) => {
     switch (language) {
-      case "Python":
+      case 'Python':
         return (
           <MaterialCommunityIcons
-            name='language-python'
+            name="language-python"
             size={24}
-            color='black'
+            color="black"
           />
         );
-      case "Ruby":
+      case 'Ruby':
         return (
           <MaterialCommunityIcons
-            name='language-ruby'
+            name="language-ruby"
             size={24}
-            color='black'
+            color="black"
             javaScript
           />
         );
-      case "TypeScript":
+      case 'TypeScript':
         return (
           <MaterialCommunityIcons
-            name='language-typescript'
+            name="language-typescript"
             size={24}
-            color='black'
+            color="black"
           />
         );
-      case "JavaScript":
+      case 'JavaScript':
         return (
           <MaterialCommunityIcons
-            name='language-javascript'
+            name="language-javascript"
             size={24}
-            color='black'
+            color="black"
           />
         );
-      case "Java":
+      case 'Java':
         return (
           <MaterialCommunityIcons
-            name='language-java'
+            name="language-java"
             size={24}
-            color='black'
+            color="black"
           />
         );
       default:
@@ -116,9 +116,9 @@ const RepositoryItem = ({ item }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID="repositoryItem">
       <View style={styles.badge}>
-        <Text style={styles.badgeText} fontWeight='bold'>
+        <Text style={styles.badgeText} fontWeight="bold">
           {getLanguageIcon(item.language)}
         </Text>
         <View style={styles.heading}>
@@ -134,27 +134,27 @@ const RepositoryItem = ({ item }) => {
               uri: `${item.ownerAvatarUrl}`,
             }}
           />
-          <Text>{item.fullName.split("/")[0]}</Text>
+          <Text>{item.fullName.split('/')[0]}</Text>
         </View>
         <View style={styles.badgeContainer}>
           <View style={styles.badge}>
-            <AntDesign name='staro' size={24} color='black' />
+            <AntDesign name="staro" size={24} color="black" />
             <Text style={styles.badgeText}>
               {formatNumber(item.stargazersCount)}
             </Text>
           </View>
           <View style={styles.badge}>
-            <AntDesign name='fork' size={24} color='black' />
+            <AntDesign name="fork" size={24} color="black" />
             <Text style={styles.badgeText}>
               {formatNumber(item.forksCount)}
             </Text>
           </View>
           <View style={styles.badge}>
-            <FontAwesome5 name='comment' size={24} color='black' />
+            <FontAwesome5 name="comment" size={24} color="black" />
             <Text style={styles.badgeText}>{item.reviewCount}</Text>
           </View>
           <View style={styles.badge}>
-            <Entypo name='bar-graph' size={24} color='black' />
+            <Entypo name="bar-graph" size={24} color="black" />
             <Text style={styles.badgeText}>{item.ratingAverage}/100</Text>
           </View>
         </View>
