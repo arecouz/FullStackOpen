@@ -4,6 +4,14 @@ import Text from './Text';
 import useRepositories from '../hooks/useRepositories';
 import RepositoryListContainer from './RepositoryListContainer';
 
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
 const RepositoryList = () => {
   const { data, loading, error } = useRepositories();
 
@@ -32,12 +40,5 @@ const RepositoryList = () => {
   return <RepositoryListContainer repositories={repositories} />;
 };
 
-const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default RepositoryList;

@@ -49,9 +49,14 @@ describe('RepositoryList', () => {
 
       render(<RepositoryListContainer repositories={repositories} />);
       const repositoryItems = screen.getAllByTestId('repositoryItem');
-      const [first] = repositoryItems;
+      const [firstItem] = repositoryItems;
 
-      screen.debug(first);
+      expect(firstItem).toHaveTextContent('jaredpalmer/formik');
+      expect(firstItem).toHaveTextContent('Build forms in React, without the tears');
+      expect(firstItem).toHaveTextContent('1.6k') // forks
+      expect(firstItem).toHaveTextContent('21.9k') // stars
+      expect(firstItem).toHaveTextContent('88') // average
+      expect(firstItem).toHaveTextContent('3')
     });
   });
 });

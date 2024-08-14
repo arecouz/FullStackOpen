@@ -1,10 +1,11 @@
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, Pressable } from 'react-native';
 import Text from './Text';
 import theme from '../theme';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Entypo from '@expo/vector-icons/Entypo';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { useNavigate } from 'react-router-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
   description: {
     fontWeight: theme.fontWeights.bold,
     marginBottom: 15,
-    padding: 25,
+    padding: 15,
   },
   heading: {
     flexDirection: 'column',
@@ -58,6 +59,7 @@ const styles = StyleSheet.create({
 });
 
 const RepositoryItem = ({ item }) => {
+  const navigate = useNavigate();
   const formatNumber = (n) => {
     if (n >= 1000 && n < 1000000) {
       return (n / 1000).toFixed(1) + 'k';
@@ -117,48 +119,50 @@ const RepositoryItem = ({ item }) => {
 
   return (
     <View style={styles.container} testID="repositoryItem">
-      <View style={styles.badge}>
-        <Text style={styles.badgeText} fontWeight="bold">
-          {getLanguageIcon(item.language)}
-        </Text>
-        <View style={styles.heading}>
-          <Text style={styles.description}>{item.description}</Text>
+      <Pressable onPress={() => navigate(`/${item.id}`)}>
+        <View style={styles.badge}>
+          <Text style={styles.badgeText} fontWeight="bold">
+            {getLanguageIcon(item.language)}
+          </Text>
+          <View style={styles.heading}>
+            <Text style={styles.description}>{item.description}</Text>
+          </View>
         </View>
-      </View>
 
-      <View style={styles.avatarAndBadgesContainer}>
-        <View style={styles.avatar}>
-          <Image
-            style={styles.avatar}
-            source={{
-              uri: `${item.ownerAvatarUrl}`,
-            }}
-          />
-          <Text>{item.fullName.split('/')[0]}</Text>
+        <View style={styles.avatarAndBadgesContainer}>
+          <View style={styles.avatar}>
+            <Image
+              style={styles.avatar}
+              source={{
+                uri: `${item.ownerAvatarUrl}`,
+              }}
+            />
+            <Text>{item.fullName}</Text>
+          </View>
+          <View style={styles.badgeContainer}>
+            <View style={styles.badge}>
+              <AntDesign name="staro" size={24} color="black" />
+              <Text style={styles.badgeText}>
+                {formatNumber(item.stargazersCount)}
+              </Text>
+            </View>
+            <View style={styles.badge}>
+              <AntDesign name="fork" size={24} color="black" />
+              <Text style={styles.badgeText}>
+                {formatNumber(item.forksCount)}
+              </Text>
+            </View>
+            <View style={styles.badge}>
+              <FontAwesome5 name="comment" size={24} color="black" />
+              <Text style={styles.badgeText}>{item.reviewCount}</Text>
+            </View>
+            <View style={styles.badge}>
+              <Entypo name="bar-graph" size={24} color="black" />
+              <Text style={styles.badgeText}>{item.ratingAverage}/100</Text>
+            </View>
+          </View>
         </View>
-        <View style={styles.badgeContainer}>
-          <View style={styles.badge}>
-            <AntDesign name="staro" size={24} color="black" />
-            <Text style={styles.badgeText}>
-              {formatNumber(item.stargazersCount)}
-            </Text>
-          </View>
-          <View style={styles.badge}>
-            <AntDesign name="fork" size={24} color="black" />
-            <Text style={styles.badgeText}>
-              {formatNumber(item.forksCount)}
-            </Text>
-          </View>
-          <View style={styles.badge}>
-            <FontAwesome5 name="comment" size={24} color="black" />
-            <Text style={styles.badgeText}>{item.reviewCount}</Text>
-          </View>
-          <View style={styles.badge}>
-            <Entypo name="bar-graph" size={24} color="black" />
-            <Text style={styles.badgeText}>{item.ratingAverage}/100</Text>
-          </View>
-        </View>
-      </View>
+      </Pressable>
     </View>
   );
 };
