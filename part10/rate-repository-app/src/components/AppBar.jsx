@@ -59,6 +59,11 @@ const AppBar = () => {
             <Text style={styles.text}>bmi</Text>
           </Link>
         </Pressable>
+        <Pressable style={styles.link}>
+          <Link to="/createReview">
+            <Text style={styles.text}>Create Review</Text>
+          </Link>
+        </Pressable>
       </ScrollView>
     </View>
   );
