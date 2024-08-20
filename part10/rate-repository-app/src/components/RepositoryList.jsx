@@ -3,6 +3,7 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import Text from './Text';
 import useRepositories from '../hooks/useRepositories';
 import RepositoryListContainer from './RepositoryListContainer';
+import OrderSelectionMenu from './OrderSelectionMenu';
 
 const styles = StyleSheet.create({
   loadingContainer: {
@@ -37,8 +38,12 @@ const RepositoryList = () => {
 
   const repositories = data.repositories;
 
-  return <RepositoryListContainer repositories={repositories} />;
+  return (
+    <View>
+      <OrderSelectionMenu />
+      <RepositoryListContainer repositories={repositories} />
+    </View>
+  );
 };
-
 
 export default RepositoryList;

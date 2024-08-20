@@ -1,0 +1,33 @@
+import { View, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { useState } from 'react';
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'black',
+  },
+  pickerStyles: { 
+    color: 'white',
+    width: '60%' }
+});
+
+const OrderSelectionMenu = () => {
+  const [selectedOrder, setSelectedORder] = useState();
+  return (
+    <View style={styles.container}>
+      <Picker
+        mode={'dropdown'}
+        dropdownIconColor={'white'}
+        style={styles.pickerStyles}
+        selectedValue={selectedOrder}
+        onValueChange={(itemValue) => setSelectedORder(itemValue)}
+      >
+        <Picker.Item label="latest" value="latest" />
+        <Picker.Item label="highest rated" value="highestRated" />
+        <Picker.Item label="lowest rated" value="lowestRated" />
+      </Picker>
+    </View>
+  );
+};
+
+export default OrderSelectionMenu;

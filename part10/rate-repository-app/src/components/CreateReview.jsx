@@ -3,6 +3,10 @@ import Text from './Text';
 import theme from '../theme';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
+import { useMutation } from '@apollo/client';
+import { CREATE_REVIEW } from '../graphQl/mutation';
+import { ActivityIndicator } from 'react-native';
+import { useNavigate } from 'react-router-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -33,23 +37,35 @@ const styles = StyleSheet.create({
 });
 
 const CreateReview = () => {
+  const [createReview, { data, error, loading }] = useMutation(CREATE_REVIEW);
+  const navigate = useNavigate();
   const initialValues = {
     ownerName: '',
     repositoryName: '',
-    rating: 0,
+    rating: '',
     text: '',
   };
 
-  const onSubmit = () => {
-    console.log(formik.values);
+  const onSubmit = async () => {
+    try {
+      const review = {
+        ...formik.values,
+        rating: parseInt(formik.values.rating, 10),
+      };
+      const response = await createReview({ variables: { review } });
+      navigate(`/${response.data.createReview.repositoryId}`);
+    } catch (error) {
+      console.log(error.message);
+    }
+    console.log(data);
   };
 
   const validationSchema = yup.object().shape({
-    owner: yup
+    ownerName: yup
       .string()
       .min(3, 'Repository Owner name must be equal or greater than 3')
       .required('Repository Owner name is required'),
-    name: yup
+    repositoryName: yup
       .string()
       .min(3, 'Repository Name must be greater than or equal to 3')
       .required('Repository Name is required'),
@@ -58,7 +74,7 @@ const CreateReview = () => {
       .min(0, 'Repository Rating must be 0-100')
       .max(100, 'Repository Rating must be 0-100')
       .required('Repository Rating is required'),
-    review: yup
+    text: yup
       .string()
       .min(3, 'Repository Review must be greater than or equal to 3'),
   });
@@ -74,22 +90,26 @@ const CreateReview = () => {
       <TextInput
         style={[
           styles.input,
-          formik.touched.ownerName && formik.errors.ownerName && styles.inputError,
+          formik.touched.ownerName &&
+            formik.errors.ownerName &&
+            styles.inputError,
         ]}
         autoCapitalize="none"
         placeholder="Repository Owner's Name"
         value={formik.values.ownerName}
-        onChangeText={formik.handleChange('owner')}
+        onChangeText={formik.handleChange('ownerName')}
       />
       <TextInput
         style={[
           styles.input,
-          formik.touched.repositoryName && formik.errors.repositoryName && styles.inputError,
+          formik.touched.repositoryName &&
+            formik.errors.repositoryName &&
+            styles.inputError,
         ]}
         autoCapitalize="none"
         placeholder="Repository Name"
         value={formik.values.repositoryName}
-        onChangeText={formik.handleChange('name')}
+        onChangeText={formik.handleChange('repositoryName')}
       />
       <TextInput
         style={[
@@ -110,7 +130,7 @@ const CreateReview = () => {
         placeholder="Review"
         value={formik.values.text}
         multiline
-        onChangeText={formik.handleChange('review')}
+        onChangeText={formik.handleChange('text')}
       />
       <Pressable style={styles.button} onPress={formik.handleSubmit}>
         <Text style={styles.buttonText}>Submit</Text>
@@ -128,11 +148,11 @@ const CreateReview = () => {
         {formik.touched.text && formik.errors.text && (
           <Text style={styles.errorText}>{formik.errors.text}</Text>
         )}
+        {loading && <ActivityIndicator />}
+        {error && <Text style={styles.errorText}>{error.message}</Text>}
       </View>
     </View>
   );
 };
-
-// How do the handle submit even work?
 
 export default CreateReview;

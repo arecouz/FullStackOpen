@@ -12,23 +12,26 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     padding: 12,
     borderBottomWidth: 1,
-    paddingBottom: 30,
     borderBottomColor: 'black',
   },
   text: {
     marginBottom: 0,
   },
   description: {
-    fontWeight: theme.fontWeights.bold,
-    marginBottom: 15,
-    padding: 15,
+    fontSize: theme.fontSizes.subheading,
+    marginBottom: 5,
   },
   heading: {
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
+  headingText: {
+    fontWeight: theme.fontWeights.bold,
+    fontSize: theme.fontSizes.heading,
+  },
   avatarAndBadgesContainer: {
+    padding: 15,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -44,8 +47,8 @@ const styles = StyleSheet.create({
   },
   badgeContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     flex: 1,
+
   },
   badge: {
     justifyContent: 'center',
@@ -117,6 +120,8 @@ const RepositoryItem = ({ item }) => {
     }
   };
 
+  const [username, title] = item.fullName.split('/');
+
   return (
     <View style={styles.container} testID="repositoryItem">
       <Pressable onPress={() => navigate(`/${item.id}`)}>
@@ -124,6 +129,7 @@ const RepositoryItem = ({ item }) => {
           <Text style={styles.badgeText} fontWeight="bold">
             {getLanguageIcon(item.language)}
           </Text>
+          <Text style={styles.headingText}>{title}</Text>
           <View style={styles.heading}>
             <Text style={styles.description}>{item.description}</Text>
           </View>
@@ -137,7 +143,7 @@ const RepositoryItem = ({ item }) => {
                 uri: `${item.ownerAvatarUrl}`,
               }}
             />
-            <Text>{item.fullName}</Text>
+            <Text>{username}</Text>
           </View>
           <View style={styles.badgeContainer}>
             <View style={styles.badge}>

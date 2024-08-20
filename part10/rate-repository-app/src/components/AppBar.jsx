@@ -8,8 +8,8 @@ import useSignOut from '../hooks/useSignOut';
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 25,
-    borderBottomWidth: 32,
+    paddingTop: 45,
+    borderBottomWidth: 13,
     backgroundColor: 'black',
   },
   link: {
@@ -20,6 +20,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
     textDecorationLine: 'underline',
+  },
+  userText: {
+    fontSize: theme.fontSizes.body,
+    color: 'yellow',
+  },
+  userContainer: {
+    justifyContent: 'center',
   },
 });
 
@@ -38,15 +45,26 @@ const AppBar = () => {
   return (
     <View style={styles.container}>
       <ScrollView horizontal>
-        {!user ? (
+        {!user && (
           <Pressable style={styles.link}>
             <Link to="/signIn">
               <Text style={styles.text}>Sign In</Text>
             </Link>
           </Pressable>
-        ) : (
+        )}
+        {!user && (
+          <Pressable style={styles.link}>
+            <Link to="/signUp">
+              <Text style={styles.text}>Sign Up</Text>
+            </Link>
+          </Pressable>
+        )}
+        {user && (
           <Pressable style={styles.link} onPress={handleSignOut}>
-            <Text style={styles.text}>Sign Out</Text>
+            <View style={styles.userContainer}>
+              <Text style={styles.text}>Sign Out</Text>
+              <Text style={styles.userText}>{user.username}</Text>
+            </View>
           </Pressable>
         )}
         <Pressable style={styles.link}>
@@ -54,16 +72,20 @@ const AppBar = () => {
             <Text style={styles.text}>Home</Text>
           </Link>
         </Pressable>
-        <Pressable style={styles.link}>
-          <Link to="/bmi">
-            <Text style={styles.text}>bmi</Text>
-          </Link>
-        </Pressable>
-        <Pressable style={styles.link}>
-          <Link to="/createReview">
-            <Text style={styles.text}>Create Review</Text>
-          </Link>
-        </Pressable>
+        {user && (
+          <Pressable style={styles.link}>
+            <Link to="/bmi">
+              <Text style={styles.text}>bmi</Text>
+            </Link>
+          </Pressable>
+        )}
+        {user && (
+          <Pressable style={styles.link}>
+            <Link to="/createReview">
+              <Text style={styles.text}>Create Review</Text>
+            </Link>
+          </Pressable>
+        )}
       </ScrollView>
     </View>
   );
