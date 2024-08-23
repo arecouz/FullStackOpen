@@ -1,4 +1,5 @@
 import { FlatList, StyleSheet, Text } from 'react-native';
+import RepositorySearchBar from './RepositorySearchBar';
 import RepositoryItem from './RepositoryItem';
 
 const styles = StyleSheet.create({
@@ -8,7 +9,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const RepositoryListContainer = ({ repositories }) => {
+const RepositoryListContainer = ({
+  repositories,
+  searchQuery,
+  setSearchQuery,
+}) => {
   const repositoryNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
     : [];
@@ -17,6 +22,12 @@ const RepositoryListContainer = ({ repositories }) => {
     <FlatList
       data={repositoryNodes}
       renderItem={({ item }) => <RepositoryItem item={item} />}
+      ListHeaderComponent={
+        <RepositorySearchBar
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
+      }
       ListFooterComponent={<Text style={styles.footer}> fin </Text>}
     />
   );
