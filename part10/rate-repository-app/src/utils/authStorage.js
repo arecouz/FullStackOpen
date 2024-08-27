@@ -15,7 +15,7 @@ class AuthStorage {
   }
 
   async removeAccessToken() {
-    await AsyncStorage.setItem(`${this.namespace}`);
+    await AsyncStorage.removeItem(`${this.namespace}`);
   }
 }
 

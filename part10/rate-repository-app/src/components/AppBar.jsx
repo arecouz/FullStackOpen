@@ -38,8 +38,12 @@ const AppBar = () => {
   const user = data ? data.me : null;
 
   const handleSignOut = async () => {
-    await signOut();
-    navigate('/signIn');
+    try {
+      await signOut();
+      navigate('/signIn');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -74,8 +78,8 @@ const AppBar = () => {
         </Pressable>
         {user && (
           <Pressable style={styles.link}>
-            <Link to="/bmi">
-              <Text style={styles.text}>bmi</Text>
+            <Link to="/MyReviews">
+              <Text style={styles.text}>My Reviews</Text>
             </Link>
           </Pressable>
         )}

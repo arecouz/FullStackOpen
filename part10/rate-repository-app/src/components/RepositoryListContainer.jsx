@@ -1,11 +1,10 @@
-import { FlatList, StyleSheet, Text } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import RepositorySearchBar from './RepositorySearchBar';
 import RepositoryItem from './RepositoryItem';
 
 const styles = StyleSheet.create({
   footer: {
-    height: 150, // don't know why this is necessary but it is.
-    color: 'grey',
+    height: 175, // don't know why this is necessary but it is.
   },
 });
 
@@ -13,6 +12,7 @@ const RepositoryListContainer = ({
   repositories,
   searchQuery,
   setSearchQuery,
+  onEndReach,
 }) => {
   const repositoryNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
@@ -28,7 +28,8 @@ const RepositoryListContainer = ({
           setSearchQuery={setSearchQuery}
         />
       }
-      ListFooterComponent={<Text style={styles.footer}> fin </Text>}
+      ListFooterComponent={<View style={styles.footer}></View>}
+      onEndReached={onEndReach}
     />
   );
 };

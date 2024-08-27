@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import Text from './Text';
 import useRepositories from '../hooks/useRepositories';
-import useRepositoriesHighestRated from '../hooks/useRepositoriesHighestRated';
-import useRepositoriesLowestRated from '../hooks/useRepositoriesLowestRated';
 import RepositoryListContainer from './RepositoryListContainer';
 import OrderSelectionMenu from './OrderSelectionMenu';
 import { useDebounce } from 'use-debounce';
@@ -19,31 +17,52 @@ const styles = StyleSheet.create({
 const RepositoryList = () => {
   const [selectedOrder, setSelectedOrder] = useState('latest');
   const [searchQuery, setSearchQuery] = useState('');
-  const [debouncedSearch] = useDebounce(searchQuery, 500)
+  const [debouncedSearch] = useDebounce(searchQuery, 500);
 
   let dataHook;
   switch (selectedOrder) {
     case 'highestRated':
-      dataHook = useRepositoriesHighestRated(debouncedSearch);
+      console.log('highest rated');
+      dataHook = useRepositories({
+        first: 5,
+        searchKeyword: debouncedSearch,
+        orderBy: 'RATING_AVERAGE',
+        orderDirection: 'DESC',
+      });
       break;
     case 'lowestRated':
-      dataHook = useRepositoriesLowestRated(debouncedSearch);
+      dataHook = useRepositories({
+        first: 5,
+        searchKeyword: debouncedSearch,
+        orderBy: 'RATING_AVERAGE',
+        orderDirection: 'ASC',
+      });
       break;
     case 'latest':
-      dataHook = useRepositories(debouncedSearch);
+      dataHook = useRepositories({
+        first: 5,
+        searchKeyword: debouncedSearch,
+        orderBy: 'CREATED_AT',
+        orderDirection: 'DESC'
+      });
       break;
     default:
-      dataHook = useRepositories(debouncedSearch);
+      dataHook = useRepositories({
+        first: 5,
+        searchKeyword: debouncedSearch,
+        orderBy: 'CREATED_AT',
+        orderDirection: 'DESC'
+      });
   }
 
-  const { data, loading, error } = dataHook;
+  const { data, loading, error, fetchMore } = dataHook;
 
   if (error) {
     return (
       <View>
         <Text>error: {error.message}</Text>
         <Text>
-          if IP has changed, update that and clear cache (npx expo start
+          If IP has changed, update that and clear cache (npx expo start
           --clear)
         </Text>
       </View>
@@ -60,6 +79,12 @@ const RepositoryList = () => {
 
   const repositories = data.repositories;
 
+  const onEndReach = () => {
+    if (repositories?.pageInfo?.hasNextPage) {
+      fetchMore();
+    }
+  };
+
   return (
     <View>
       <OrderSelectionMenu
@@ -70,6 +95,7 @@ const RepositoryList = () => {
         repositories={repositories}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        onEndReach={onEndReach}
       />
     </View>
   );

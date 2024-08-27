@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
 });
 
 const ReviewItem = ({ review }) => {
-  const formattedDate = format(new Date(review.createdAt), 'MMMM d, yyyy');
+  const formattedDate = format(new Date(review.createdAt), 'MMMM dd, yyyy');
 
   return (
     <View style={styles.container}>
@@ -46,7 +46,7 @@ const ReviewItem = ({ review }) => {
         </View>
       </View>
 
-      <Text>text: {review.text}</Text>
+      <Text>{review.text}</Text>
     </View>
   );
 };
